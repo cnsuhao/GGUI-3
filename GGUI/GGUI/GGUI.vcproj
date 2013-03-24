@@ -161,10 +161,6 @@
 			Name="SoComponent"
 			>
 			<File
-				RelativePath=".\SoBaseTypeDefine.h"
-				>
-			</File>
-			<File
 				RelativePath=".\SoD3DDefine.h"
 				>
 			</File>
@@ -179,6 +175,10 @@
 		</Filter>
 		<File
 			RelativePath=".\GGUIArray.h"
+			>
+		</File>
+		<File
+			RelativePath=".\GGUIBaseDefine.h"
 			>
 		</File>
 		<File
@@ -198,10 +198,6 @@
 			>
 		</File>
 		<File
-			RelativePath=".\GGUIDXTextureDefine.h"
-			>
-		</File>
-		<File
 			RelativePath=".\GGUIDXTextureManager.cpp"
 			>
 		</File>
@@ -215,10 +211,6 @@
 		</File>
 		<File
 			RelativePath=".\GGUIImageset.h"
-			>
-		</File>
-		<File
-			RelativePath=".\GGUIImagesetDefine.h"
 			>
 		</File>
 		<File

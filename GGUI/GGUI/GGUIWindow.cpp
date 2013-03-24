@@ -12,7 +12,7 @@ namespace GGUI
 	:m_eMyWindowType(WindowType_Base)
 	,m_nMyWindowID(Invalid_WindowID)
 	,m_nMyImagesetID(Invalid_ImagesetID)
-	,m_nMyImageRectID(Invalid_ImageRectID)
+	,m_nMyImageID(Invalid_ImageID)
 	,m_nMyDelegateID(Invalid_DelegateID)
 	,m_fPositionX(0.0f)
 	,m_fPositionY(0.0f)
@@ -100,9 +100,9 @@ namespace GGUI
 		m_bDirty = true;
 	}
 	//-----------------------------------------------------------------------------
-	void GGUIWindow::SetImageRectID(ImageRectID theID)
+	void GGUIWindow::SetImageID(ImageID theID)
 	{
-		m_nMyImageRectID = theID;
+		m_nMyImageID = theID;
 		m_bDirty = true;
 	}
 	//-----------------------------------------------------------------------------
@@ -163,9 +163,9 @@ namespace GGUI
 		return m_nMyImagesetID;
 	}
 	//-----------------------------------------------------------------------------
-	ImageRectID GGUIWindow::GetImageRectID() const
+	ImageID GGUIWindow::GetImageID() const
 	{
-		return m_nMyImageRectID;
+		return m_nMyImageID;
 	}
 	//-----------------------------------------------------------------------------
 	DelegateID GGUIWindow::GetDelegateID() const
@@ -235,7 +235,7 @@ namespace GGUI
 		theRenderUnit.fColorB = m_fColorB;
 		theRenderUnit.fColorA = m_fColorA;
 		theRenderUnit.theImagesetID = m_nMyImagesetID;
-		theRenderUnit.theImageRectID = m_nMyImageRectID;
+		theRenderUnit.theImageID = m_nMyImageID;
 	}
 }
 //-----------------------------------------------------------------------------

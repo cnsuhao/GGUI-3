@@ -41,7 +41,7 @@ bool MyApp::InitResource(void)
 	GGUISystem::GetInstance()->InitUISystem(SoD3DApp::GetD3DDevice(), (float)m_lClientW, (float)m_lClientH);
 	//
 	GGUILog* pLog = new GGUILog;
-	pLog->InitLog(TEXT("oil.txt"), true, true);
+	pLog->InitLog(TEXT("Log.txt"), true, true);
 	GGUILog::SetInstance(pLog);
 	//
 	//CreateUIWindowA();
@@ -242,10 +242,10 @@ void MyApp::CreateUIWindowA()
 	m_pUIWindow->SetAlpha(1.0f);
 
 	ImagesetID theImagesetID = Invalid_ImagesetID;
-	ImageRectID theImageRectID = Invalid_ImageRectID;
-	GGUIImagesetManager::GetInstance()->CreateImagesetByTextureFile(TEXT("A.jpg"), GGUITinyString(TEXT("Ajpg")), &theImagesetID, &theImageRectID);
+	ImageID theImageID = Invalid_ImageID;
+	GGUIImagesetManager::GetInstance()->CreateImagesetByTextureFile(TEXT("A.jpg"), GGUITinyString(TEXT("Ajpg")), &theImagesetID, &theImageID);
 	m_pUIWindow->SetImagesetID(theImagesetID);
-	m_pUIWindow->SetImageRectID(theImageRectID);
+	m_pUIWindow->SetImageID(theImageID);
 	//m_pUIWindow->SetImageByFileName(TEXT("B.tga"));
 	m_pUIWindow->UpdateWindow(0.0f);
 
@@ -278,10 +278,10 @@ void MyApp::CreateWindowList()
 			pWindow->SetAlpha(1.0f);
 			SoPrintf(szBuff, sizeof(szBuff), TEXT("Pic/%d.bmp"), y*PictureCountX+x);
 			ImagesetID theImagesetID = Invalid_ImagesetID;
-			ImageRectID theImageRectID = Invalid_ImageRectID;
-			GGUIImagesetManager::GetInstance()->CreateImagesetByTextureFile(szBuff, GGUITinyString(szBuff), &theImagesetID, &theImageRectID);
+			ImageID theImageID = Invalid_ImageID;
+			GGUIImagesetManager::GetInstance()->CreateImagesetByTextureFile(szBuff, GGUITinyString(szBuff), &theImagesetID, &theImageID);
 			pWindow->SetImagesetID(theImagesetID);
-			pWindow->SetImageRectID(theImageRectID);
+			pWindow->SetImageID(theImageID);
 			RegisterWindowEventB(pWindow->GetWindowID(), WindowEvent_MouseLeftButtonClickDown, this, &MyApp::OnMouseClickWindowList);
 			m_theWindowList.push_back(pWindow->GetWindowID());
 		}

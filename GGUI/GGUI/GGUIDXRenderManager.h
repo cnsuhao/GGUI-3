@@ -6,7 +6,6 @@
 #define _GGUIDXRenderManager_h_
 //-----------------------------------------------------------------------------
 #include "SoD3DDefine.h"
-#include "GGUIImagesetDefine.h"
 #include "GGUIDXTextureDefine.h"
 //-----------------------------------------------------------------------------
 namespace GGUI

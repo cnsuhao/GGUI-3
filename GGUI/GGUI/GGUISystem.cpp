@@ -10,6 +10,7 @@
 #include "GGUIDXRenderManager.h"
 #include "GGUIDXTextureManager.h"
 #include "GGUIImagesetManager.h"
+#include "GGUILog.h"
 //-----------------------------------------------------------------------------
 namespace GGUI
 {
@@ -74,6 +75,12 @@ namespace GGUI
 		delete GGUIDXRenderManager::GetInstance();
 		delete GGUIInputProcess::GetInstance();
 		delete GGUIWindowManager::GetInstance();
+		//×îºó³¢ÊÔÊÍ·ÅGGUILog¡£
+		if (GGUILog::GetInstance())
+		{
+			GGUILog::GetInstance()->ReleaseLog();
+			delete GGUILog::GetInstance();
+		}
 		m_pD3DDevice = NULL;
 	}
 	//-----------------------------------------------------------------------------

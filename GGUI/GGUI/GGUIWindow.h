@@ -7,7 +7,6 @@
 #define _GGUIWindow_h_
 //-----------------------------------------------------------------------------
 #include "GGUIWindowDefine.h"
-#include "GGUIImagesetDefine.h"
 //-----------------------------------------------------------------------------
 namespace GGUI
 {
@@ -30,7 +29,7 @@ namespace GGUI
 		void SetColor(float fR, float fG, float fB);
 		void SetAlpha(float fAlpha);
 		void SetImagesetID(ImagesetID theID);
-		void SetImageRectID(ImageRectID theID);
+		void SetImageID(ImageID theID);
 		virtual void SetVisible(bool bVisible);
 		virtual void SetEnable(bool bEnable);
 
@@ -44,7 +43,7 @@ namespace GGUI
 		float GetAlpha() const;
 		WindowID GetWindowID() const;
 		ImagesetID GetImagesetID() const;
-		ImageRectID GetImageRectID() const;
+		ImageID GetImageID() const;
 		DelegateID GetDelegateID() const;
 		bool GetVisible() const;
 		bool GetEnable() const;
@@ -76,7 +75,7 @@ namespace GGUI
 		WindowID m_nMyWindowID;
 		//本窗口的贴图。
 		ImagesetID m_nMyImagesetID;
-		ImageRectID m_nMyImageRectID;
+		ImageID m_nMyImageID;
 		//本窗口的Delegate事件响应函数的ID。
 		DelegateID m_nMyDelegateID;
 		//

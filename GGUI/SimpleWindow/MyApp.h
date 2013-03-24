@@ -10,7 +10,6 @@
 #include "../GGUI/SoD3DDefine.h"
 #include "../GGUI/GGUIInputDefine.h"
 #include "../GGUI/GGUIWindowDefine.h"
-#include "../GGUI/GGUIImagesetDefine.h"
 #include "../GGUI/GGUITinyString.h"
 #include "../GGUI/GGUIRect.h"
 #include "../GGUI/GGUIDXTextureDefine.h"

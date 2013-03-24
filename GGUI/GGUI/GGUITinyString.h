@@ -5,7 +5,7 @@
 #ifndef _GGUITinyString_h_
 #define _GGUITinyString_h_
 //-----------------------------------------------------------------------------
-#include "SoBaseTypeDefine.h"
+#include "GGUIBaseDefine.h"
 //-----------------------------------------------------------------------------
 namespace GGUI
 {
@@ -39,7 +39,7 @@ namespace GGUI
 			return m_szBuffer;
 		}
 		//-----------------------------------------------------------------------------
-		//注意，pszString字符串的size（包括结束符）不能大于MaxSize_ImagesetName；
+		//注意，pszString字符串的size（包括结束符）不能大于MaxCharCount_TinyString；
 		//如果大于的话，会被截断。
 		//如果pszString值为NULL，则m_szBuffer被置为空字符串""。
 		void SetValue(const tchar* pszString);

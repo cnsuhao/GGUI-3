@@ -1,6 +1,9 @@
 ﻿//-----------------------------------------------------------------------------
 // (C) oil
 // 2012-12-02
+//
+// 本类允许用户定义派生类。通过调用GGUILog::SetInstance()把派生类对象的指针告知
+// 给GGUI。派生类对象的释放由GGUI负责。
 //-----------------------------------------------------------------------------
 #include <Windows.h>
 #include <tchar.h>
@@ -9,10 +12,10 @@
 //-----------------------------------------------------------------------------
 namespace GGUI
 {
-	GGUILog* GGUILog::ms_pInstance = NULL;
+	GGUILog* GGUILog::ms_pInstance = SoNULL;
 	//-----------------------------------------------------------------------------
 	GGUILog::GGUILog()
-	:m_fp(NULL)
+	:m_fp(SoNULL)
 	,m_bOutputDebugString(false)
 	,m_bFlushImmediately(false)
 	{
@@ -21,7 +24,7 @@ namespace GGUI
 	//-----------------------------------------------------------------------------
 	GGUILog::~GGUILog()
 	{
-		CloseDiskFile();
+		ms_pInstance = SoNULL;
 	}
 	//-----------------------------------------------------------------------------
 	void GGUILog::SetInstance(GGUILog* pLog)
@@ -44,6 +47,11 @@ namespace GGUI
 		m_bOutputDebugString = bOutputDebugString;
 		m_bFlushImmediately = bFlushImmediately;
 		return br;
+	}
+	//-----------------------------------------------------------------------------
+	void GGUILog::ReleaseLog()
+	{
+		CloseDiskFile();
 	}
 	//-----------------------------------------------------------------------------
 	void GGUILog::OutputDebug(const tchar* pFormat, ...)
@@ -136,11 +144,11 @@ namespace GGUI
 		{
 			if (STRSAFE_E_INVALID_PARAMETER == hr)
 			{
-				::MessageBox(NULL, TEXT("STRSAFE_E_INVALID_PARAMETER"), TEXT("GGUILog Error"), MB_OK);
+				::MessageBox(SoNULL, TEXT("STRSAFE_E_INVALID_PARAMETER"), TEXT("GGUILog Error"), MB_OK);
 			}
 			else if (STRSAFE_E_INSUFFICIENT_BUFFER == hr)
 			{
-				::MessageBox(NULL, TEXT("STRSAFE_E_INSUFFICIENT_BUFFER"), TEXT("GGUILog Error"), MB_OK);
+				::MessageBox(SoNULL, TEXT("STRSAFE_E_INSUFFICIENT_BUFFER"), TEXT("GGUILog Error"), MB_OK);
 			}
 		}
 	}
@@ -150,7 +158,7 @@ namespace GGUI
 		if (_tfopen_s(&m_fp, pszDiskFileName, TEXT("at+")) != 0)
 		{
 			//打开文件失败。
-			m_fp = NULL;
+			m_fp = SoNULL;
 			return false;
 		}
 		//
@@ -181,7 +189,7 @@ namespace GGUI
 			fwrite(szBuff, theBuffLength, 1, m_fp);
 			fflush(m_fp);
 			fclose(m_fp);
-			m_fp = NULL;
+			m_fp = SoNULL;
 		}
 	}
 }

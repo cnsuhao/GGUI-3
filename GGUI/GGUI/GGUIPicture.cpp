@@ -46,7 +46,7 @@ namespace GGUI
 			if (pImageset)
 			{
 				GGUIRect kImageRectPixel;
-				if (pImageset->GetImageRectPixel(m_nMyImageRectID, kImageRectPixel))
+				if (pImageset->GetImageRectPixel(m_nMyImageID, kImageRectPixel))
 				{
 					float fTextureSourceWidth = kImageRectPixel.m_fRight - kImageRectPixel.m_fLeft;
 					float fTextureSourceHeight = kImageRectPixel.m_fBottom - kImageRectPixel.m_fTop;
@@ -79,7 +79,7 @@ namespace GGUI
 			theRenderUnit.fColorB = m_fColorB;
 			theRenderUnit.fColorA = m_fColorA;
 			theRenderUnit.theImagesetID = m_nMyImagesetID;
-			theRenderUnit.theImageRectID = m_nMyImageRectID;
+			theRenderUnit.theImageID = m_nMyImageID;
 		}
 	}
 }

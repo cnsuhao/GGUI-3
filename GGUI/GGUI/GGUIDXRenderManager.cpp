@@ -139,7 +139,7 @@ namespace GGUI
 		}
 		if (s_pTargetImageset)
 		{
-			const GGUIRect* pRect = s_pTargetImageset->GetImageRect(theRenderUnit.theImageRectID);
+			const GGUIRect* pRect = s_pTargetImageset->GetImageRect(theRenderUnit.theImageID);
 			if (pRect)
 			{
 				fUVLeft = pRect->m_fLeft;

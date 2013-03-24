@@ -6,7 +6,7 @@
 #define _GGUILog_h_
 //-----------------------------------------------------------------------------
 #include <stdio.h>
-#include "SoBaseTypeDefine.h"
+#include "GGUIBaseDefine.h"
 //-----------------------------------------------------------------------------
 namespace GGUI
 {
@@ -26,6 +26,8 @@ namespace GGUI
 		//--bOutputDebugString 是否把log信息输出到VS的debug窗口。
 		//--bFlushImmediately 是否每次输出log后立即执行flush操作。
 		virtual bool InitLog(const tchar* pszDiskFileName, bool bOutputDebugString, bool bFlushImmediately);
+		//释放资源，析构前调用。析构函数中不要调用虚函数。
+		virtual void ReleaseLog();
 		//
 		virtual void OutputDebug(const tchar* pFormat, ...);
 		virtual void OutputWaring(const tchar* pFormat, ...);

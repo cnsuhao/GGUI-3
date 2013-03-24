@@ -19,18 +19,8 @@ namespace GGUI
 		bool InitImagesetManager();
 		void ReleaseImagesetManager();
 
-		//从磁盘上加载指定的Imageset文件。
-		//--pszImagesetFile 磁盘文件路径。
-		//--pImagesetID 如果为有效值，不管返回值为true还是false，都会把得到的ImagesetID赋值给它。
-		//如果指定的Imageset文件已经存在（已经加载），则返回false。
-		bool CreateImagesetByFile(const tchar* pszImagesetFile, ImagesetID* pImagesetID);
 		//临时函数。
-		bool CreateImagesetByTextureFile(const tchar* pszTextureFile, const GGUITinyString& strImagesetName, ImagesetID* pImagesetID, ImageRectID* pImageRectID);
-		//创建一个GGUIImageset对象。其ImageRect的个数为0.
-		//--strImagesetName 名字。
-		//--pImagesetID 如果为有效值，不管返回值为true还是false，都会把得到的ImagesetID赋值给它。
-		//如果名字为strImagesetName的Imageset文件已经存在，则返回false。
-		bool CreateImageset(const GGUITinyString& strImagesetName, ImagesetID* pImagesetID);
+		bool CreateImagesetByTextureFile(const tchar* pszTextureFile, const GGUITinyString& strImagesetName, ImagesetID* pImagesetID, ImageID* pImageID);
 		//删除一个GGUIImageset对象。
 		void ReleaseImageset(ImagesetID theImagesetID);
 		//获取一个GGUIImageset对象。
@@ -38,13 +28,18 @@ namespace GGUI
 		ImagesetID GetImagesetIDByName(const GGUITinyString& strImagesetName) const;
 
 	private:
+		IDirect3DTexture9* LoadTextureFromDisk(const tchar* pszFileName) const;
+
+
+	private:
+		typedef std::vector<GGUIImageset> vecImageset;
 		typedef std::map<GGUITinyString, ImagesetID> mapImagesetName2ImagesetID;
 
 	private:
 		static GGUIImagesetManager* ms_pInstance;
 	private:
-		//GGUIImageset指针数组。
-		GGUIArray<GGUIImageset*> m_arrayImageset;
+		//GGUIImageset数组。
+		vecImageset m_arrayImageset;
 		//维护从ImagesetName到ImagesetID的映射。
 		mapImagesetName2ImagesetID m_mapImagesetName2ID;
 
@@ -57,7 +52,14 @@ namespace GGUI
 	//-----------------------------------------------------------------------------
 	inline GGUIImageset* GGUIImagesetManager::GetImageset(ImagesetID theImagesetID)
 	{
-		return m_arrayImageset.GetElement(theImagesetID);
+		if (theImagesetID < (ImagesetID)m_arrayImageset.size())
+		{
+			return &(m_arrayImageset[theImagesetID]);
+		}
+		else
+		{
+			return SoNULL;
+		}
 	}
 	//-----------------------------------------------------------------------------
 	inline ImagesetID GGUIImagesetManager::GetImagesetIDByName(const GGUITinyString& strImagesetName) const

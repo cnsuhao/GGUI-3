@@ -49,6 +49,8 @@
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=""
+				ObjectFile="../Output/SimpleWindow/Debug/Obj/"
+				ProgramDataBaseFileName="../Output/SimpleWindow/Debug/SimpleWindow_d.pdb"
 				WarningLevel="3"
 				DebugInformationFormat="4"
 			/>
@@ -64,7 +66,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="d3d9.lib d3dx9.lib"
-				OutputFile="../Output/SimpleWindow/Debug/SimpleWindow.exe"
+				OutputFile="../Output/SimpleWindow/Debug/SimpleWindow_d.exe"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="..\ThirdParty\FreeType\lib;..\ThirdParty\DirectX\Lib\x86"
 				ManifestFile="../Output/SimpleWindow/Debug/SimpleWindow.intermediate.manifest"
@@ -93,6 +95,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				CommandLine="copy /y ..\Output\SimpleWindow\Debug\SimpleWindow_d.exe ..\..\Client\&#x0D;&#x0A;copy /y ..\Output\SimpleWindow\Debug\SimpleWindow_d.pdb ..\..\Client\"
 			/>
 		</Configuration>
 		<Configuration
@@ -129,6 +132,8 @@
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=""
+				ObjectFile="../Output/SimpleWindow/Release/Obj/"
+				ProgramDataBaseFileName="../Output/SimpleWindow/Release/SimpleWindow.pdb"
 				WarningLevel="3"
 				DebugInformationFormat="3"
 			/>
@@ -175,6 +180,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				CommandLine="copy /y ..\Output\SimpleWindow\Release\SimpleWindow.exe ..\..\Client\&#x0D;&#x0A;copy /y ..\Output\SimpleWindow\Release\SimpleWindow.pdb ..\..\Client\"
 			/>
 		</Configuration>
 	</Configurations>

@@ -5,65 +5,88 @@
 #ifndef _GGUIImageset_h_
 #define _GGUIImageset_h_
 //-----------------------------------------------------------------------------
+#include <vector>
 #include <map>
-#include "GGUIImagesetDefine.h"
+#include "GGUIBaseDefine.h"
 #include "GGUITinyString.h"
-#include "GGUIRect.h"
-#include "GGUIDXTextureDefine.h"
 #include "GGUIArray.h"
+#include "SoD3DDefine.h"
 //-----------------------------------------------------------------------------
 namespace GGUI
 {
+	class GGUIImage
+	{
+	public:
+		GGUIImage()
+		:m_MyImageID(Invalid_ImageID), m_fLeft(0.0f), m_fRight(0.0f)
+		,m_fTop(0.0f), m_fBottom(0.0f) { }
+	public:
+		//记录自己的ImageID。
+		//如果为无效值，表示本对象是无效值。
+		ImageID m_MyImageID;
+		//记录纹理坐标。
+		float m_fLeft;
+		float m_fRight;
+		float m_fTop;
+		float m_fBottom;
+	};
 	//-----------------------------------------------------------------------------
 	class GGUIImageset
 	{
 		friend class GGUIImagesetManager;
 	public:
+		GGUIImageset();
+		~GGUIImageset();
+
 		ImagesetID GetImagesetID() const;
 		//获取本Imageset的名字。
 		const GGUITinyString& GetImagesetName() const;
-		DXTextureID GetDXTextureID() const;
+		//获取DXTexture指针。
+		const IDirect3DTexture9* GetDXTexture() const;
 
-		//新增一个ImageRect。
-		//--strRectName ImageRect的名字。
+		//新增一个Image。
+		//--strImageName Image的名字。
 		//--fLeft,fRight,fTop,fBottom 纹理坐标。
-		//--pRectID 如果为有效值，不管函数返回true还是false，都会把得到的ImageRectID赋值给它。
-		//如果已经存在名字为strRectName的ImageRect，则返回false。
-		bool AddImageRect(const GGUITinyString& strRectName, float fLeft, float fRight, float fTop, float fBottom, ImageRectID* pRectID);
-		void RemoveImageRect(ImageRectID theRectID);
-		const GGUIRect* GetImageRect(ImageRectID theRectID) const;
-		ImageRectID GetImageRectIDByName(const GGUITinyString& strRectName) const;
-		const GGUITinyString* GetImageRectNameByID(ImageRectID theRectID) const;
+		//返回新Image的ImageID。
+		//如果已经存在名字为strImageName的Image，则新值覆盖旧值。
+		ImageID AddImage(const GGUITinyString& strImageName, float fLeft, float fRight, float fTop, float fBottom);
+		void RemoveImage(ImageID theImageID);
+		const GGUIImage* GetImage(ImageID theImageID) const;
+		ImageID GetImageIDByName(const GGUITinyString& strImageName) const;
+		const GGUITinyString* GetImageNameByID(ImageID theImageID) const;
 		//ImageRect中存储的是纹理UV坐标。这个函数用于获取ImageRect的像素坐标。
-		bool GetImageRectPixel(ImageRectID theRectID, GGUIRect& theRect) const;
+		bool GetImageRectPixel(ImageID theImageID, float& fLeft, float& fRight, float& fTop, float& fBottom) const;
 
 	protected:
-		GGUIImageset();
-		~GGUIImageset();
 		void SetImagesetID(ImagesetID theID);
 		//设置本Imageset的名字。
-		//注意，pszName字符串的size（包括结束符）不能大于MaxSize_ImagesetName；
+		//注意，pszName字符串的size（包括结束符）不能大于MaxCharCount_TinyString；
 		//如果大于的话，会被截断。
 		void SetImagesetName(const tchar* pszName);
-		//设置新的DXTextureID。
-		//传入无效值表示删除现有的纹理。
-		void SetDXTextureID(DXTextureID theTextureID);
+		//
+		void SetDXTexture(IDirect3DTexture9* pTexture);
+		//
+		void ReleaseImageset();
+		//根据规则，生成一个ImageID。
+		ImageID GenerateImageID() const;
+		SoInt GenerateIndex(ImageID theImageID) const;
 
 	private:
-		typedef std::map<GGUITinyString, ImageRectID> mapRectName2RectID;
+		typedef std::vector<GGUIImage> vecImage;
+		typedef std::map<GGUITinyString, ImageID> mapImageName2ImageID;
 
 	private:
-		//存储GGUIRect*的数组。
-		GGUIArray<GGUIRect*> m_arrayRect;
 		//
 		ImagesetID m_MyImagesetID;
-		DXTextureID m_MyDXTextureID;
 		GGUITinyString m_MyImagesetName;
+		IDirect3DTexture9* m_pDXTexture;
 		//记录DX贴图资源的宽高。
 		int m_nDXTextureWidth;
 		int m_nDXTextureHeight;
-		//存储从ImageRectName到ImageRectID的映射。
-		mapRectName2RectID m_mapRectName2RectID;
+		//存储GGUIImage的数组。
+		vecImage m_vecImageList;
+		//存储从ImageName到ImageID的映射。
+		mapImageName2ImageID m_mapName2ID;
 
 	};
 	//-----------------------------------------------------------------------------
@@ -77,22 +100,17 @@ namespace GGUI
 		return m_MyImagesetName;
 	}
 	//-----------------------------------------------------------------------------
-	inline DXTextureID GGUIImageset::GetDXTextureID() const
+	inline const IDirect3DTexture9* GGUIImageset::GetDXTexture() const
 	{
-		return m_MyDXTextureID;
+		return m_pDXTexture;
 	}
 	//-----------------------------------------------------------------------------
-	inline const GGUIRect* GGUIImageset::GetImageRect(ImageRectID theRectID) const
+	inline ImageID GGUIImageset::GetImageIDByName(const GGUITinyString& strImageName) const
 	{
-		return m_arrayRect.GetElement(theRectID);
-	}
-	//-----------------------------------------------------------------------------
-	inline ImageRectID GGUIImageset::GetImageRectIDByName(const GGUITinyString& strRectName) const
-	{
-		mapRectName2RectID::const_iterator it = m_mapRectName2RectID.find(strRectName);
-		if (it == m_mapRectName2RectID.end())
+		mapImageName2ImageID::const_iterator it = m_mapName2ID.find(strImageName);
+		if (it == m_mapName2ID.end())
 		{
-			return Invalid_ImageRectID;
+			return Invalid_ImageID;
 		}
 		else
 		{
@@ -105,9 +123,16 @@ namespace GGUI
 		m_MyImagesetID = theID;
 	}
 	//-----------------------------------------------------------------------------
-	inline void GGUIImageset::SetImagesetName(const tchar* pszName)
+	inline ImageID GGUIImageset::GenerateImageID() const
 	{
-		m_MyImagesetName.SetValue(pszName);
+		ImageID theResult = (ImageID)m_vecImageList.size();
+		theResult += m_MyImagesetID * ImageID_ImagesetID;
+		return theResult;
+	}
+	//-----------------------------------------------------------------------------
+	inline SoInt GGUIImageset::GenerateIndex(ImageID theImageID) const
+	{
+		return (theImageID % ImageID_ImagesetID);
 	}
 } //namespace GGUI
 //-----------------------------------------------------------------------------
