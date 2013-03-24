@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GGUI", "GGUI\GGUI.vcproj", "{A0F13560-E326-4BE0-BB41-8D4EBA3603C6}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SimpleWindow", "SimpleWindow\SimpleWindow.vcproj", "{5E545D67-E39A-45DD-BF2E-86EAA7E7E36D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A0F13560-E326-4BE0-BB41-8D4EBA3603C6} = {A0F13560-E326-4BE0-BB41-8D4EBA3603C6}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A0F13560-E326-4BE0-BB41-8D4EBA3603C6}.Debug|Win32.ActiveCfg = Debug|Win32
+		{A0F13560-E326-4BE0-BB41-8D4EBA3603C6}.Debug|Win32.Build.0 = Debug|Win32
+		{A0F13560-E326-4BE0-BB41-8D4EBA3603C6}.Release|Win32.ActiveCfg = Release|Win32
+		{A0F13560-E326-4BE0-BB41-8D4EBA3603C6}.Release|Win32.Build.0 = Release|Win32
+		{5E545D67-E39A-45DD-BF2E-86EAA7E7E36D}.Debug|Win32.ActiveCfg = Debug|Win32
+		{5E545D67-E39A-45DD-BF2E-86EAA7E7E36D}.Debug|Win32.Build.0 = Debug|Win32
+		{5E545D67-E39A-45DD-BF2E-86EAA7E7E36D}.Release|Win32.ActiveCfg = Release|Win32
+		{5E545D67-E39A-45DD-BF2E-86EAA7E7E36D}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
