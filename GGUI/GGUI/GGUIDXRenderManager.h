@@ -5,8 +5,8 @@
 #ifndef _GGUIDXRenderManager_h_
 #define _GGUIDXRenderManager_h_
 //-----------------------------------------------------------------------------
-#include "SoD3DDefine.h"
-#include "GGUIDXTextureDefine.h"
+#include "GGUID3DDefine.h"
+#include "GGUIBaseDefine.h"
 //-----------------------------------------------------------------------------
 namespace GGUI
 {
@@ -66,8 +66,6 @@ namespace GGUI
 		int m_nVertexContentIndexEnd;
 		//记录本次绘制的纹理贴图ID。
 		ImagesetID m_theTargetImagesetID;
-		//记录本次绘制的DX纹理ID。
-		DXTextureID m_theTargetDXTextureID;
 
 	};
 	//-----------------------------------------------------------------------------

@@ -3,9 +3,7 @@
 // (C) oil
 // 2012-09-26
 //-----------------------------------------------------------------------------
-#include "SoBaseTypeDefine.h"
 #include "GGUIInputProcess.h"
-#include "GGUIWindow.h"
 #include "GGUIWindowManager.h"
 //-----------------------------------------------------------------------------
 namespace GGUI

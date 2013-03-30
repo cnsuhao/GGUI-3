@@ -7,15 +7,10 @@
 //-----------------------------------------------------------------------------
 #include "SoD3DApp.h"
 #include <vector>
-#include "../GGUI/SoD3DDefine.h"
+#include "../GGUI/GGUID3DDefine.h"
 #include "../GGUI/GGUIInputDefine.h"
-#include "../GGUI/GGUIWindowDefine.h"
 #include "../GGUI/GGUITinyString.h"
-#include "../GGUI/GGUIRect.h"
-#include "../GGUI/GGUIDXTextureDefine.h"
-#include "../GGUI/GGUIArray.h"
 #include "../GGUI/GGUISystem.h"
-#include "../GGUI/GGUIWindow.h"
 #include "../GGUI/GGUIWindowManager.h"
 #include "../GGUI/GGUILog.h"
 using namespace GGUI;

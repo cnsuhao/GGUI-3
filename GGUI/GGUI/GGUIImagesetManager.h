@@ -30,9 +30,8 @@ namespace GGUI
 	private:
 		IDirect3DTexture9* LoadTextureFromDisk(const tchar* pszFileName) const;
 
-
 	private:
-		typedef std::vector<GGUIImageset> vecImageset;
+		typedef std::vector<GGUIImageset*> vecImageset;
 		typedef std::map<GGUITinyString, ImagesetID> mapImagesetName2ImagesetID;
 
 	private:
@@ -52,9 +51,10 @@ namespace GGUI
 	//-----------------------------------------------------------------------------
 	inline GGUIImageset* GGUIImagesetManager::GetImageset(ImagesetID theImagesetID)
 	{
-		if (theImagesetID < (ImagesetID)m_arrayImageset.size())
+		if (theImagesetID >= 0 && theImagesetID < (ImagesetID)m_arrayImageset.size())
 		{
-			return &(m_arrayImageset[theImagesetID]);
+			//m_arrayImageset[theImagesetID]有可能是SoNULL。
+			return m_arrayImageset[theImagesetID];
 		}
 		else
 		{

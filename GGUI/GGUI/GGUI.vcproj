@@ -157,24 +157,8 @@
 	<References>
 	</References>
 	<Files>
-		<Filter
-			Name="SoComponent"
-			>
-			<File
-				RelativePath=".\SoD3DDefine.h"
-				>
-			</File>
-			<File
-				RelativePath=".\SoStringHelp.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\SoStringHelp.h"
-				>
-			</File>
-		</Filter>
 		<File
-			RelativePath=".\GGUIArray.h"
+			RelativePath=".\GGUIBaseDefine.cpp"
 			>
 		</File>
 		<File
@@ -190,19 +174,15 @@
 			>
 		</File>
 		<File
+			RelativePath=".\GGUID3DDefine.h"
+			>
+		</File>
+		<File
 			RelativePath=".\GGUIDXRenderManager.cpp"
 			>
 		</File>
 		<File
 			RelativePath=".\GGUIDXRenderManager.h"
-			>
-		</File>
-		<File
-			RelativePath=".\GGUIDXTextureManager.cpp"
-			>
-		</File>
-		<File
-			RelativePath=".\GGUIDXTextureManager.h"
 			>
 		</File>
 		<File
@@ -250,15 +230,19 @@
 			>
 		</File>
 		<File
-			RelativePath=".\GGUIRect.h"
-			>
-		</File>
-		<File
 			RelativePath=".\GGUIScreenParam.cpp"
 			>
 		</File>
 		<File
 			RelativePath=".\GGUIScreenParam.h"
+			>
+		</File>
+		<File
+			RelativePath=".\GGUIStringHelp.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\GGUIStringHelp.h"
 			>
 		</File>
 		<File
@@ -283,10 +267,6 @@
 		</File>
 		<File
 			RelativePath=".\GGUIWindow.h"
-			>
-		</File>
-		<File
-			RelativePath=".\GGUIWindowDefine.h"
 			>
 		</File>
 		<File

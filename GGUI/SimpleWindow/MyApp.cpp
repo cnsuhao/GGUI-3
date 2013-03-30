@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 #include "MyApp.h"
 #include "../GGUI/GGUIImagesetManager.h"
-#include "../GGUI/SoStringHelp.h"
+#include "../GGUI/GGUIStringHelp.h"
 //-----------------------------------------------------------------------------
 SoD3DApp* SoD3DApp::CreateInstance(void)
 {
@@ -244,7 +244,6 @@ void MyApp::CreateUIWindowA()
 	ImagesetID theImagesetID = Invalid_ImagesetID;
 	ImageID theImageID = Invalid_ImageID;
 	GGUIImagesetManager::GetInstance()->CreateImagesetByTextureFile(TEXT("A.jpg"), GGUITinyString(TEXT("Ajpg")), &theImagesetID, &theImageID);
-	m_pUIWindow->SetImagesetID(theImagesetID);
 	m_pUIWindow->SetImageID(theImageID);
 	//m_pUIWindow->SetImageByFileName(TEXT("B.tga"));
 	m_pUIWindow->UpdateWindow(0.0f);
@@ -280,7 +279,6 @@ void MyApp::CreateWindowList()
 			ImagesetID theImagesetID = Invalid_ImagesetID;
 			ImageID theImageID = Invalid_ImageID;
 			GGUIImagesetManager::GetInstance()->CreateImagesetByTextureFile(szBuff, GGUITinyString(szBuff), &theImagesetID, &theImageID);
-			pWindow->SetImagesetID(theImagesetID);
 			pWindow->SetImageID(theImageID);
 			RegisterWindowEventB(pWindow->GetWindowID(), WindowEvent_MouseLeftButtonClickDown, this, &MyApp::OnMouseClickWindowList);
 			m_theWindowList.push_back(pWindow->GetWindowID());

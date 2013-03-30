@@ -23,15 +23,20 @@ namespace GGUI
 	//-----------------------------------------------------------------------------
 	bool GGUIImagesetManager::InitImagesetManager()
 	{
-		//注意，预分配的元素空间尽量大，GGUIImageset对象内有stl容器，如果发生对象
-		//拷贝的话，会比较耗时。
 		m_arrayImageset.reserve(20);
 		return true;
 	}
 	//-----------------------------------------------------------------------------
 	void GGUIImagesetManager::ReleaseImagesetManager()
 	{
+		//先把m_mapImagesetName2ID清零，有利于提高ReleaseImageset()执行速度。
 		m_mapImagesetName2ID.clear();
+		//
+		int nCount = (int)m_arrayImageset.size();
+		for (int i=0; i<nCount; ++i)
+		{
+			ReleaseImageset(i);
+		}
 		m_arrayImageset.clear();
 	}
 	//-----------------------------------------------------------------------------
@@ -43,11 +48,11 @@ namespace GGUI
 			return false;
 		}
 		ImagesetID newImagesetID = (ImagesetID)m_arrayImageset.size();
-		GGUIImageset kImageset;
-		kImageset.SetImagesetID(newImagesetID);
-		kImageset.SetImagesetName(strImagesetName.GetValue());
-		kImageset.SetDXTexture(pDXTexture);
-		m_arrayImageset.push_back(kImageset);
+		GGUIImageset* pImageset = new GGUIImageset;
+		pImageset->SetImagesetID(newImagesetID);
+		pImageset->SetImagesetName(strImagesetName.GetValue());
+		pImageset->SetDXTexture(pDXTexture);
+		m_arrayImageset.push_back(pImageset);
 		//维护在map中。
 		m_mapImagesetName2ID.insert(std::make_pair(strImagesetName, newImagesetID));
 		//
@@ -56,6 +61,13 @@ namespace GGUI
 		{
 			return false;
 		}
+		//
+		D3DSURFACE_DESC stDesc;
+		if (pDXTexture->GetLevelDesc(0, &stDesc) == D3D_OK)
+		{
+			pNewImageset->SetTextureWidthHeight((int)stDesc.Width, (int)stDesc.Height);
+		}
+		//
 		ImageID newImageID = pNewImageset->AddImage(GGUITinyString(TEXT("default")), 0.0f, 1.0f, 0.0f, 1.0f);
 		if (pImagesetID)
 		{
@@ -70,16 +82,10 @@ namespace GGUI
 	//-----------------------------------------------------------------------------
 	void GGUIImagesetManager::ReleaseImageset(ImagesetID theImagesetID)
 	{
-		for (vecImageset::iterator it_image = m_arrayImageset.begin();
-			it_image != m_arrayImageset.end();
-			++it_image)
+		if (theImagesetID >= 0 && theImagesetID < (ImagesetID)m_arrayImageset.size())
 		{
-			if (it_image->GetImagesetID() == theImagesetID)
-			{
-				//注意，只把对象清零，不要把对象删除。
-				it_image->ReleaseImageset();
-				break;
-			}
+			//注意，只把对象删除，不要把对象从容器中移除。
+			SAFE_DELETE(m_arrayImageset[theImagesetID]);
 		}
 		//
 		for (mapImagesetName2ImagesetID::iterator it = m_mapImagesetName2ID.begin();

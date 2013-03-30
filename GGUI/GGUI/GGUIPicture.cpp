@@ -5,7 +5,6 @@
 //-----------------------------------------------------------------------------
 #include "GGUIPicture.h"
 #include "GGUIImagesetManager.h"
-#include "GGUIImageset.h"
 //-----------------------------------------------------------------------------
 namespace GGUI
 {
@@ -42,14 +41,18 @@ namespace GGUI
 			float fDestWidth = m_fWidth;
 			float fDestHeight = m_fHeight;
 			//获取图片源文件的宽高。
-			const GGUIImageset* pImageset = GGUIImagesetManager::GetInstance()->GetImageset(m_nMyImagesetID);
+			ImagesetID theImagesetID = Help_GetImagesetIDByImageID(m_nMyImageID);
+			const GGUIImageset* pImageset = GGUIImagesetManager::GetInstance()->GetImageset(theImagesetID);
 			if (pImageset)
 			{
-				GGUIRect kImageRectPixel;
-				if (pImageset->GetImageRectPixel(m_nMyImageID, kImageRectPixel))
+				float fLeft = 0.0f;
+				float fRight = 0.0f;
+				float fTop = 0.0f;
+				float fBottom = 0.0f;
+				if (pImageset->GetImageRectPixel(m_nMyImageID, fLeft, fRight, fTop, fBottom))
 				{
-					float fTextureSourceWidth = kImageRectPixel.m_fRight - kImageRectPixel.m_fLeft;
-					float fTextureSourceHeight = kImageRectPixel.m_fBottom - kImageRectPixel.m_fTop;
+					float fTextureSourceWidth = fRight - fLeft;
+					float fTextureSourceHeight = fBottom - fTop;
 					float fWindowHeightWidth = m_fHeight / m_fWidth;
 					float fTextureHeightWidth = fTextureSourceHeight / fTextureSourceWidth;
 					if (fWindowHeightWidth > fTextureHeightWidth)
@@ -78,7 +81,6 @@ namespace GGUI
 			theRenderUnit.fColorG = m_fColorG;
 			theRenderUnit.fColorB = m_fColorB;
 			theRenderUnit.fColorA = m_fColorA;
-			theRenderUnit.theImagesetID = m_nMyImagesetID;
 			theRenderUnit.theImageID = m_nMyImageID;
 		}
 	}

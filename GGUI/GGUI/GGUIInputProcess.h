@@ -6,8 +6,8 @@
 #ifndef _GGUIInputProcess_h_
 #define _GGUIInputProcess_h_
 //-----------------------------------------------------------------------------
+#include "GGUIBaseDefine.h"
 #include "GGUIScreenParam.h"
-#include "GGUIWindowDefine.h"
 //-----------------------------------------------------------------------------
 namespace GGUI
 {

@@ -9,8 +9,7 @@
 #include <map>
 #include "GGUIBaseDefine.h"
 #include "GGUITinyString.h"
-#include "GGUIArray.h"
-#include "SoD3DDefine.h"
+#include "GGUID3DDefine.h"
 //-----------------------------------------------------------------------------
 namespace GGUI
 {
@@ -42,7 +41,7 @@ namespace GGUI
 		//获取本Imageset的名字。
 		const GGUITinyString& GetImagesetName() const;
 		//获取DXTexture指针。
-		const IDirect3DTexture9* GetDXTexture() const;
+		IDirect3DTexture9* GetDXTexture() const;
 
 		//新增一个Image。
 		//--strImageName Image的名字。
@@ -51,6 +50,7 @@ namespace GGUI
 		//如果已经存在名字为strImageName的Image，则新值覆盖旧值。
 		ImageID AddImage(const GGUITinyString& strImageName, float fLeft, float fRight, float fTop, float fBottom);
 		void RemoveImage(ImageID theImageID);
+		GGUIImage* GetImage(ImageID theImageID);
 		const GGUIImage* GetImage(ImageID theImageID) const;
 		ImageID GetImageIDByName(const GGUITinyString& strImageName) const;
 		const GGUITinyString* GetImageNameByID(ImageID theImageID) const;
@@ -65,11 +65,12 @@ namespace GGUI
 		void SetImagesetName(const tchar* pszName);
 		//
 		void SetDXTexture(IDirect3DTexture9* pTexture);
+		void SetTextureWidthHeight(int nWidth, int nHeight);
 		//
 		void ReleaseImageset();
 		//根据规则，生成一个ImageID。
 		ImageID GenerateImageID() const;
-		SoInt GenerateIndex(ImageID theImageID) const;
+		SoInt GetIndexByImageID(ImageID theImageID) const;
 
 	private:
 		typedef std::vector<GGUIImage> vecImage;
@@ -79,10 +80,12 @@ namespace GGUI
 		//
 		ImagesetID m_MyImagesetID;
 		GGUITinyString m_MyImagesetName;
+		//DX贴图没有使用引用计数进行维护。本类的对象不要做赋值操作。
+		//不要把对象维护在stl容器中，应该把指针维护在stl容器中。
 		IDirect3DTexture9* m_pDXTexture;
-		//记录DX贴图资源的宽高。
-		int m_nDXTextureWidth;
-		int m_nDXTextureHeight;
+		//记录贴图资源的宽高，单位像素。
+		int m_nTextureWidth;
+		int m_nTextureHeight;
 		//存储GGUIImage的数组。
 		vecImage m_vecImageList;
 		//存储从ImageName到ImageID的映射。
@@ -100,7 +103,7 @@ namespace GGUI
 		return m_MyImagesetName;
 	}
 	//-----------------------------------------------------------------------------
-	inline const IDirect3DTexture9* GGUIImageset::GetDXTexture() const
+	inline IDirect3DTexture9* GGUIImageset::GetDXTexture() const
 	{
 		return m_pDXTexture;
 	}
@@ -130,7 +133,7 @@ namespace GGUI
 		return theResult;
 	}
 	//-----------------------------------------------------------------------------
-	inline SoInt GGUIImageset::GenerateIndex(ImageID theImageID) const
+	inline SoInt GGUIImageset::GetIndexByImageID(ImageID theImageID) const
 	{
 		return (theImageID % ImageID_ImagesetID);
 	}

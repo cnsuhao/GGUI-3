@@ -13,10 +13,10 @@ namespace GGUI
 	:m_MyImagesetID(Invalid_ImagesetID)
 	,m_MyImagesetName()
 	,m_pDXTexture(SoNULL)
-	,m_nDXTextureWidth(0)
-	,m_nDXTextureHeight(0)
+	,m_nTextureWidth(0)
+	,m_nTextureHeight(0)
 	{
-
+		m_vecImageList.reserve(10);
 	}
 	//-----------------------------------------------------------------------------
 	GGUIImageset::~GGUIImageset()
@@ -26,14 +26,6 @@ namespace GGUI
 	//-----------------------------------------------------------------------------
 	ImageID GGUIImageset::AddImage(const GGUITinyString& strImageName, float fLeft, float fRight, float fTop, float fBottom)
 	{
-		//如果是第一次添加Image元素，则预先分配内存。
-		//之所以没有放到构造函数中去预分配内存，是为了减少本类对象的初始大小，
-		//在GGUIImagesetManager中会为本类对象预先分配内存。
-		if (m_vecImageList.empty())
-		{
-			m_vecImageList.reserve(10);
-		}
-		//
 		ImageID theImageID = GenerateImageID();
 		GGUIImage theImage;
 		theImage.m_MyImageID = theImageID;
@@ -49,16 +41,11 @@ namespace GGUI
 	//-----------------------------------------------------------------------------
 	void GGUIImageset::RemoveImage(ImageID theImageID)
 	{
-		for (vecImage::iterator it = m_vecImageList.begin();
-			it != m_vecImageList.end();
-			++it)
+		GGUIImage* theImage = GetImage(theImageID);
+		if (theImage)
 		{
-			if (it->m_MyImageID == theImageID)
-			{
-				//注意，这里不能移除元素，只能把元素置为无效值。
-				it->m_MyImageID = Invalid_ImageID;
-				break;
-			}
+			//元素不要从容器中移除，只是把其置为无效值。
+			theImage->m_MyImageID = Invalid_ImageID;
 		}
 		//
 		for (mapImageName2ImageID::iterator it_map = m_mapName2ID.begin();
@@ -73,10 +60,25 @@ namespace GGUI
 		}
 	}
 	//-----------------------------------------------------------------------------
+	GGUIImage* GGUIImageset::GetImage(ImageID theImageID)
+	{
+		SoInt theIndex = GetIndexByImageID(theImageID);
+		if (theIndex >= 0 && theIndex < (SoInt)m_vecImageList.size()
+			&& m_vecImageList[theIndex].m_MyImageID != Invalid_ImageID)
+		{
+			return &(m_vecImageList[theIndex]);
+		}
+		else
+		{
+			return SoNULL;
+		}
+	}
+	//-----------------------------------------------------------------------------
 	const GGUIImage* GGUIImageset::GetImage(ImageID theImageID) const
 	{
-		SoInt theIndex = GenerateIndex(theImageID);
-		if (theIndex < (SoInt)m_vecImageList.size())
+		SoInt theIndex = GetIndexByImageID(theImageID);
+		if (theIndex >= 0 && theIndex < (SoInt)m_vecImageList.size()
+			&& m_vecImageList[theIndex].m_MyImageID != Invalid_ImageID)
 		{
 			return &(m_vecImageList[theIndex]);
 		}
@@ -108,25 +110,25 @@ namespace GGUI
 		const GGUIImage* pRect = GetImage(theImageID);
 		if (pRect)
 		{
-			fLeft = pRect->m_fLeft * m_nDXTextureWidth;
-			fRight = pRect->m_fRight * m_nDXTextureWidth;
-			fTop = pRect->m_fTop * m_nDXTextureHeight;
-			fBottom = pRect->m_fBottom * m_nDXTextureHeight;
+			fLeft = pRect->m_fLeft * m_nTextureWidth;
+			fRight = pRect->m_fRight * m_nTextureWidth;
+			fTop = pRect->m_fTop * m_nTextureHeight;
+			fBottom = pRect->m_fBottom * m_nTextureHeight;
 			if (fLeft < 0.0f)
 			{
 				fLeft = 0.0f;
 			}
-			if (fRight > (float)m_nDXTextureWidth)
+			if (fRight > (float)m_nTextureWidth)
 			{
-				fRight = (float)m_nDXTextureWidth;
+				fRight = (float)m_nTextureWidth;
 			}
 			if (fTop < 0.0f)
 			{
 				fTop = 0.0f;
 			}
-			if (fBottom > (float)m_nDXTextureHeight)
+			if (fBottom > (float)m_nTextureHeight)
 			{
-				fBottom = (float)m_nDXTextureHeight;
+				fBottom = (float)m_nTextureHeight;
 			}
 			return true;
 		}
@@ -147,12 +149,21 @@ namespace GGUI
 		m_pDXTexture = pTexture;
 	}
 	//-----------------------------------------------------------------------------
+	void GGUIImageset::SetTextureWidthHeight(int nWidth, int nHeight)
+	{
+		m_nTextureWidth = nWidth;
+		m_nTextureHeight = nHeight;
+	}
+	//-----------------------------------------------------------------------------
 	void GGUIImageset::ReleaseImageset()
 	{
+		m_MyImagesetID = Invalid_ImagesetID;
+		m_MyImagesetName.SetValue(SoNULL);
 		SAFE_D3D_RELEASE(m_pDXTexture);
+		m_nTextureWidth = 0;
+		m_nTextureHeight = 0;
 		m_mapName2ID.clear();
 		m_vecImageList.clear();
-		m_MyImagesetID = Invalid_ImagesetID;
 	}
 	//-----------------------------------------------------------------------------
 } //namespace GGUI

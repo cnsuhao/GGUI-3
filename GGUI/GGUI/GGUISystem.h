@@ -6,7 +6,7 @@
 #ifndef _GGUISystem_h_
 #define _GGUISystem_h_
 //-----------------------------------------------------------------------------
-#include "SoD3DDefine.h"
+#include "GGUID3DDefine.h"
 #include "GGUIInputDefine.h"
 //-----------------------------------------------------------------------------
 namespace GGUI

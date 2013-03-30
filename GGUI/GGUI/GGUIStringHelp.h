@@ -1,10 +1,9 @@
 //--------------------------------------------------------------------
-//  SoStringHelp.h
 //  (C) oil
 //  2012-04-29
 //--------------------------------------------------------------------
-#ifndef _SOSTRINGHELP_H_
-#define _SOSTRINGHELP_H_
+#ifndef _GGUISTRINGHELP_H_
+#define _GGUISTRINGHELP_H_
 //--------------------------------------------------------------------
 #include <strsafe.h>
 //--------------------------------------------------------------------
@@ -44,7 +43,8 @@ namespace GGUI
 	//Unicode字符串转换成Ansi格式。
 	//返回值存储在一个全局的字符数组内。
 	//如果出现错误则字符数组的第一个元素为0，即返回值为空字符串""。
-	char* UnicodeToAnsi(const wchar_t* pSrcString);
+	//如果pNewStringByteCount为有效值，则会被赋值，新值为返回字符串的长度（单位字节，不包括结束符）。
+	char* UnicodeToAnsi(const wchar_t* pSrcString, int* pNewStringLength=NULL);
 	//--------------------------------------------------------------------
 	//Utf8字符串转换成Unicode格式。
 	//返回值存储在一个全局的字符数组内。
@@ -67,5 +67,5 @@ namespace GGUI
 	char* Utf8ToAnsi(const char* pSrcString);
 }
 //--------------------------------------------------------------------
-#endif
+#endif //_GGUISTRINGHELP_H_
 //--------------------------------------------------------------------

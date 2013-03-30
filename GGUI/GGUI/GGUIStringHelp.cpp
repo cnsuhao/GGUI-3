@@ -1,12 +1,11 @@
 //--------------------------------------------------------------------
-//  SoStringHelp.cpp
 //  (C) oil
 //  2012-04-29
 //--------------------------------------------------------------------
 #include <Windows.h>
-#include "SoStringHelp.h"
+#include "GGUIStringHelp.h"
 //--------------------------------------------------------------------
-namespace SoComponent
+namespace GGUI
 {
 	//字符缓冲区，存储字符串转换后的结果。
 	//注意，缓冲区的大小是固定的，外界调用函数时要小心，转换后的字符个数不能太多。
@@ -57,7 +56,7 @@ namespace SoComponent
 		return pResult;
 	}
 	//--------------------------------------------------------------------
-	char* UnicodeToAnsi(const wchar_t* pSrcString)
+	char* UnicodeToAnsi(const wchar_t* pSrcString, int* pNewStringLength/*=NULL*/)
 	{
 		char* pResult = theCharBuffer;
 		pResult[0] = 0;
@@ -78,6 +77,10 @@ namespace SoComponent
 			return pResult;
 		}
 		::WideCharToMultiByte(CP_ACP, 0, pSrcString, -1, pResult, nByteCount, NULL, NULL);
+		if (pNewStringLength)
+		{
+			*pNewStringLength = nByteCount - 1;
+		}
 		return pResult;
 	}
 	//--------------------------------------------------------------------
@@ -158,5 +161,5 @@ namespace SoComponent
 		//再把Unicode字符串转换成Ansi格式。
 		return UnicodeToAnsi(tempBuffer);
 	}
-}
+} //namespace GGUI
 //--------------------------------------------------------------------

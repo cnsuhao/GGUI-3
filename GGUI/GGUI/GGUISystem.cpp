@@ -8,7 +8,6 @@
 #include "GGUIWindowManager.h"
 #include "GGUIInputProcess.h"
 #include "GGUIDXRenderManager.h"
-#include "GGUIDXTextureManager.h"
 #include "GGUIImagesetManager.h"
 #include "GGUILog.h"
 //-----------------------------------------------------------------------------
@@ -53,12 +52,6 @@ namespace GGUI
 			return false;
 		}
 		//
-		new GGUIDXTextureManager;
-		if (!GGUIDXTextureManager::GetInstance()->InitDXTextureManager())
-		{
-			return false;
-		}
-		//
 		new GGUIImagesetManager;
 		if (!GGUIImagesetManager::GetInstance()->InitImagesetManager())
 		{
@@ -71,7 +64,6 @@ namespace GGUI
 	void GGUISystem::ReleaseUISystem()
 	{
 		delete GGUIImagesetManager::GetInstance();
-		delete GGUIDXTextureManager::GetInstance();
 		delete GGUIDXRenderManager::GetInstance();
 		delete GGUIInputProcess::GetInstance();
 		delete GGUIWindowManager::GetInstance();

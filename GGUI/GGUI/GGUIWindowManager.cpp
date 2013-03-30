@@ -4,7 +4,6 @@
 // 2012-09-16
 //-----------------------------------------------------------------------------
 #include "GGUIWindowManager.h"
-#include "SoBaseTypeDefine.h"
 #include "GGUIDXRenderManager.h"
 #include "GGUIButton.h"
 #include "GGUIPicture.h"
@@ -14,12 +13,6 @@ namespace GGUI
 	GGUIWindowManager* GGUIWindowManager::ms_pInstance = SoNULL;
 	//-----------------------------------------------------------------------------
 	GGUIWindowManager::GGUIWindowManager()
-	:m_pWindowID2Window(SoNULL)
-	,m_pDelegateID2Delegate(SoNULL)
-	,m_nCapacity(0)
-	,m_nIndexEnd(0)
-	,m_nDelegateCapacity(0)
-	,m_nDelegateIndexEnd(0)
 	{
 		ms_pInstance = this;
 	}
@@ -32,45 +25,42 @@ namespace GGUI
 	//-----------------------------------------------------------------------------
 	bool GGUIWindowManager::InitWindowManager()
 	{
-		//初始化窗口数组。
-		m_nCapacity = 100;
-		m_pWindowID2Window = new GGUIWindow*[m_nCapacity];
-		memset(m_pWindowID2Window, 0, sizeof(GGUIWindow*)*m_nCapacity);
-		//初始化Delegate数组。
-		m_nDelegateCapacity = 100;
-		m_pDelegateID2Delegate = new stWindowEventDelegate*[m_nDelegateCapacity];
-		memset(m_pDelegateID2Delegate, 0, sizeof(stWindowEventDelegate*)*m_nDelegateCapacity);
+		m_vecWindowList.reserve(100);
+		m_vecDelegateList.reserve(20);
 		return true;
 	}
 	//-----------------------------------------------------------------------------
 	void GGUIWindowManager::ReleaseWindowManager()
 	{
-		for (int i=0; i<m_nIndexEnd; ++i)
+		int nWindowCount = (int)m_vecWindowList.size();
+		for (int i=0; i<nWindowCount; ++i)
 		{
-			if (m_pWindowID2Window[i])
+			if (m_vecWindowList[i])
 			{
-				SAFE_DELETE(m_pWindowID2Window[i]);
+				SAFE_DELETE(m_vecWindowList[i]);
 			}
 		}
-		SAFE_DELETE_ARRAY(m_pWindowID2Window);
+		m_vecWindowList.clear();
 		//
-		for (int i=0; i<m_nDelegateIndexEnd; ++i)
+		int nDelegateCount = (int)m_vecDelegateList.size();
+		for (int i=0; i<nDelegateCount; ++i)
 		{
-			if (m_pDelegateID2Delegate[i])
+			if (m_vecDelegateList[i])
 			{
-				SAFE_DELETE(m_pDelegateID2Delegate[i]);
+				SAFE_DELETE(m_vecDelegateList[i]);
 			}
 		}
-		SAFE_DELETE_ARRAY(m_pDelegateID2Delegate);
+		m_vecDelegateList.clear();
 	}
 	//-----------------------------------------------------------------------------
 	void GGUIWindowManager::UpdateWindowManager(float fFrameTime)
 	{
-		for (int i=0; i<m_nIndexEnd; ++i)
+		int nWindowCount = (int)m_vecWindowList.size();
+		for (int i=0; i<nWindowCount; ++i)
 		{
-			if (m_pWindowID2Window[i])
+			if (m_vecWindowList[i])
 			{
-				m_pWindowID2Window[i]->UpdateWindow(fFrameTime);
+				m_vecWindowList[i]->UpdateWindow(fFrameTime);
 			}
 		}
 	}
@@ -82,12 +72,14 @@ namespace GGUI
 		//
 		GGUIDXRenderManager* pDXRenderMgr = GGUIDXRenderManager::GetInstance();
 		stRenderUnit theRenderUnit;
-		for (int i=0; i<m_nIndexEnd; ++i)
+		int nWindowCount = (int)m_vecWindowList.size();
+		for (int i=0; i<nWindowCount; ++i)
 		{
-			if (m_pWindowID2Window[i] && m_pWindowID2Window[i]->GetVisible())
+			GGUIWindow* theWindow = m_vecWindowList[i];
+			if (theWindow && theWindow->GetVisible())
 			{
 				pDXRenderMgr->PreRender();
-				m_pWindowID2Window[i]->GenerateRenderUnit(theRenderUnit);
+				theWindow->GenerateRenderUnit(theRenderUnit);
 				pDXRenderMgr->AddRnederUnit(theRenderUnit);
 				pDXRenderMgr->DoRender();
 				pDXRenderMgr->PostRender();
@@ -97,18 +89,6 @@ namespace GGUI
 	//-----------------------------------------------------------------------------
 	GGUIWindow* GGUIWindowManager::CreateUIWindow(eWindowType theType)
 	{
-		if (m_nIndexEnd >= m_nCapacity)
-		{
-			//m_pWindowID2Object容器空间不够了，则把容器空间扩大到原来的2倍。
-			SoUInt sizeOfOldArray = sizeof(GGUIWindow*) * m_nCapacity;
-			m_nCapacity *= 2;
-			GGUIWindow** pNewArray = new GGUIWindow*[m_nCapacity];
-			SoUInt sizeOfNewArray = sizeof(GGUIWindow*) * m_nCapacity;
-			memset(pNewArray, 0, sizeOfNewArray);
-			memcpy_s(pNewArray, sizeOfNewArray, m_pWindowID2Window, sizeOfOldArray);
-			SAFE_DELETE_ARRAY(m_pWindowID2Window);
-			m_pWindowID2Window = pNewArray;
-		}
 		GGUIWindow* pNewWindow = SoNULL;
 		switch (theType)
 		{
@@ -126,21 +106,18 @@ namespace GGUI
 		}
 		if (pNewWindow)
 		{
-			m_pWindowID2Window[m_nIndexEnd] = pNewWindow;
-			m_pWindowID2Window[m_nIndexEnd]->SetWindowID(m_nIndexEnd);
-			++m_nIndexEnd;
+			WindowID newWindowID = (WindowID)m_vecWindowList.size();
+			pNewWindow->SetWindowID(newWindowID);
+			m_vecWindowList.push_back(pNewWindow);
 		}
 		return pNewWindow;
 	}
 	//-----------------------------------------------------------------------------
 	void GGUIWindowManager::ReleaseUIWindow(WindowID theWindowID)
 	{
-		if (theWindowID >= 0 && theWindowID < m_nIndexEnd)
+		if (theWindowID >= 0 && theWindowID < (WindowID)m_vecWindowList.size())
 		{
-			if (m_pWindowID2Window[theWindowID])
-			{
-				SAFE_DELETE(m_pWindowID2Window[theWindowID]);
-			}
+			SAFE_DELETE(m_vecWindowList[theWindowID]);
 		}
 		else
 		{
@@ -160,9 +137,9 @@ namespace GGUI
 				theDelegateID = CreateDelegate();
 				pTheWindow->SetDelegateID(theDelegateID);
 			}
-			if (theDelegateID >= 0 && theDelegateID < m_nDelegateIndexEnd)
+			if (theDelegateID >= 0 && theDelegateID < (DelegateID)m_vecDelegateList.size())
 			{
-				pDelegate = m_pDelegateID2Delegate[theDelegateID];
+				pDelegate = m_vecDelegateList[theDelegateID];
 			}
 		}
 		return pDelegate;
@@ -170,11 +147,11 @@ namespace GGUI
 	//-----------------------------------------------------------------------------
 	bool GGUIWindowManager::Next(int& nIndex, GGUIWindow*& pWindow)
 	{
-		if (nIndex >= 0 && nIndex < m_nIndexEnd)
+		if (nIndex >= 0 && nIndex < (int)m_vecWindowList.size())
 		{
-			if (m_pWindowID2Window[nIndex])
+			if (m_vecWindowList[nIndex])
 			{
-				pWindow = m_pWindowID2Window[nIndex];
+				pWindow = m_vecWindowList[nIndex];
 				++nIndex;
 				return true;
 			}
@@ -193,33 +170,22 @@ namespace GGUI
 	//-----------------------------------------------------------------------------
 	void GGUIWindowManager::PostUpdateWindowManager()
 	{
-		for (int i=0; i<m_nIndexEnd; ++i)
+		int nWindowCount = (int)m_vecWindowList.size();
+		for (int i=0; i<nWindowCount; ++i)
 		{
-			if (m_pWindowID2Window[i])
+			if (m_vecWindowList[i])
 			{
-				m_pWindowID2Window[i]->PostUpdateWindow();
+				m_vecWindowList[i]->PostUpdateWindow();
 			}
 		}
 	}
 	//-----------------------------------------------------------------------------
 	DelegateID GGUIWindowManager::CreateDelegate()
 	{
-		if (m_nDelegateIndexEnd >= m_nDelegateCapacity)
-		{
-			//m_pDelegateID2Delegate容器空间不够了，则把容器空间扩大到原来的2倍。
-			SoUInt sizeOfOldArray = sizeof(stWindowEventDelegate*) * m_nDelegateCapacity;
-			m_nDelegateCapacity *= 2;
-			stWindowEventDelegate** pNewArray = new stWindowEventDelegate*[m_nDelegateCapacity];
-			SoUInt sizeOfNewArray = sizeof(stWindowEventDelegate*) * m_nDelegateCapacity;
-			memset(pNewArray, 0, sizeOfNewArray);
-			memcpy_s(pNewArray, sizeOfNewArray, m_pDelegateID2Delegate, sizeOfOldArray);
-			SAFE_DELETE_ARRAY(m_pDelegateID2Delegate);
-			m_pDelegateID2Delegate = pNewArray;
-		}
-		//
-		m_pDelegateID2Delegate[m_nDelegateIndexEnd] = new stWindowEventDelegate;
-		++m_nDelegateIndexEnd;
-		return (m_nDelegateIndexEnd-1);
+		DelegateID newDelegateID = (DelegateID)m_vecDelegateList.size();
+		stWindowEventDelegate* pDelegate = new stWindowEventDelegate;
+		m_vecDelegateList.push_back(pDelegate);
+		return newDelegateID;
 	}
 }
 //-----------------------------------------------------------------------------

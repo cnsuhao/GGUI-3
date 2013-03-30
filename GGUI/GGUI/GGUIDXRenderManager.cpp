@@ -10,8 +10,6 @@
 #include "GGUIDXRenderManager.h"
 #include "GGUISystem.h"
 #include "GGUIImagesetManager.h"
-#include "GGUIImageset.h"
-#include "GGUIDXTextureManager.h"
 //-----------------------------------------------------------------------------
 namespace GGUI
 {
@@ -28,7 +26,6 @@ namespace GGUI
 	,m_nVertexContentCapacity(0)
 	,m_nVertexContentIndexEnd(0)
 	,m_theTargetImagesetID(Invalid_ImagesetID)
-	,m_theTargetDXTextureID(Invalid_DXTextureID)
 	{
 		ms_pInstance = this;
 	}
@@ -69,7 +66,6 @@ namespace GGUI
 	{
 		m_nVertexContentIndexEnd = 0;
 		m_theTargetImagesetID = Invalid_ImagesetID;
-		m_theTargetDXTextureID = Invalid_DXTextureID;
 		//保存原来的DX设备渲染状态。事后要还原为原来状态。
 		if (m_pDXStateBlock)
 		{
@@ -129,23 +125,23 @@ namespace GGUI
 		//考虑s_pTargetImageset在成员列表中的排序问题。
 		//这样做有缺陷，如果在一系列的AddRnederUnit()调用过程中做了删除Imageset的操作，
 		//s_pTargetImageset有可能变成野指针。
+		//所以逻辑中要控制好，不能有上述操作。
 		static GGUIImageset* s_pTargetImageset = NULL;
-		ImagesetID destImagesetID = theRenderUnit.theImagesetID;
+		ImagesetID destImagesetID = Help_GetImagesetIDByImageID(theRenderUnit.theImageID);
 		if (m_theTargetImagesetID != destImagesetID)
 		{
 			m_theTargetImagesetID = destImagesetID;
 			s_pTargetImageset = GGUIImagesetManager::GetInstance()->GetImageset(destImagesetID);
-			m_theTargetDXTextureID = s_pTargetImageset->GetDXTextureID();
 		}
 		if (s_pTargetImageset)
 		{
-			const GGUIRect* pRect = s_pTargetImageset->GetImageRect(theRenderUnit.theImageID);
-			if (pRect)
+			const GGUIImage* pImage = s_pTargetImageset->GetImage(theRenderUnit.theImageID);
+			if (pImage)
 			{
-				fUVLeft = pRect->m_fLeft;
-				fUVRight = pRect->m_fRight;
-				fUVTop = pRect->m_fTop;
-				fUVBottom = pRect->m_fBottom;
+				fUVLeft = pImage->m_fLeft;
+				fUVRight = pImage->m_fRight;
+				fUVTop = pImage->m_fTop;
+				fUVBottom = pImage->m_fBottom;
 			}
 		}
 		//
@@ -193,7 +189,12 @@ namespace GGUI
 		{
 			return;
 		}
-		IDirect3DTexture9* pDXTexture = GGUIDXTextureManager::GetInstance()->GetDXTexture(m_theTargetDXTextureID);
+		IDirect3DTexture9* pDXTexture = NULL;
+		GGUIImageset* theTargetImageset = GGUIImagesetManager::GetInstance()->GetImageset(m_theTargetImagesetID);
+		if (theTargetImageset)
+		{
+			pDXTexture = theTargetImageset->GetDXTexture();
+		}
 		if (pDXTexture == NULL)
 		{
 			return;
@@ -221,7 +222,6 @@ namespace GGUI
 	void GGUIDXRenderManager::PostRender()
 	{
 		m_theTargetImagesetID = Invalid_ImagesetID;
-		m_theTargetDXTextureID = Invalid_DXTextureID;
 		//还原为原来的渲染状态。
 		if (m_pDXStateBlock)
 		{

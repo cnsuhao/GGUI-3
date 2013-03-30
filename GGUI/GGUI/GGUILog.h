@@ -34,7 +34,7 @@ namespace GGUI
 		virtual void OutputError(const tchar* pFormat, ...);
 
 	protected:
-		virtual void AddLogHead(tchar* pType);
+		virtual void AddLogHead(char* pType);
 		virtual void AddLogBody(const tchar* pFormat, const va_list& kVaList);
 		//打开磁盘上指定的log文件。
 		//如果文件存在，则在文件尾部继续写入log信息；

@@ -4,11 +4,15 @@
 //
 // 本类允许用户定义派生类。通过调用GGUILog::SetInstance()把派生类对象的指针告知
 // 给GGUI。派生类对象的释放由GGUI负责。
+//
+// 工程选项中用户可以设置使用ANSI字符集还是Unicode字符集。如果是Unicode字符集，
+// 输出log过程中会吧Unicode字符串转换为ANSI字符串。
 //-----------------------------------------------------------------------------
 #include <Windows.h>
 #include <tchar.h>
 #include <strsafe.h>
 #include "GGUILog.h"
+#include "GGUIStringHelp.h"
 //-----------------------------------------------------------------------------
 namespace GGUI
 {
@@ -56,7 +60,7 @@ namespace GGUI
 	//-----------------------------------------------------------------------------
 	void GGUILog::OutputDebug(const tchar* pFormat, ...)
 	{
-		AddLogHead(TEXT("DEBUG"));
+		AddLogHead("DEBUG");
 		//
 		va_list marker;
 		va_start(marker, pFormat);
@@ -66,7 +70,7 @@ namespace GGUI
 	//-----------------------------------------------------------------------------
 	void GGUILog::OutputWaring(const tchar* pFormat, ...)
 	{
-		AddLogHead(TEXT("WARING"));
+		AddLogHead("WARING");
 		//
 		va_list marker;
 		va_start(marker, pFormat);
@@ -76,7 +80,7 @@ namespace GGUI
 	//-----------------------------------------------------------------------------
 	void GGUILog::OutputError(const tchar* pFormat, ...)
 	{
-		AddLogHead(TEXT("ERROR"));
+		AddLogHead("ERROR");
 		//
 		va_list marker;
 		va_start(marker, pFormat);
@@ -84,23 +88,23 @@ namespace GGUI
 		va_end(marker);
 	}
 	//-----------------------------------------------------------------------------
-	void GGUILog::AddLogHead(tchar* pType)
+	void GGUILog::AddLogHead(char* pType)
 	{
-		tchar szBuff[128] = {0};
+		char szBuff[128] = {0};
 		SYSTEMTIME stTime;
 		GetSystemTime(&stTime);
-		StringCbPrintf(szBuff, sizeof(szBuff), 
-			TEXT("%02u:%02u:%02u:%03u [%s] "),
+		StringCbPrintfA(szBuff, sizeof(szBuff), 
+			"%02u:%02u:%02u:%03u [%s] ",
 			stTime.wHour+8, stTime.wMinute, stTime.wSecond, stTime.wMilliseconds, pType);
 		if (m_fp)
 		{
 			size_t theBuffLength = 0;
-			StringCbLength(szBuff, sizeof(szBuff), &theBuffLength);
+			StringCbLengthA(szBuff, sizeof(szBuff), &theBuffLength);
 			fwrite(szBuff, theBuffLength, 1, m_fp);
 		}
 		if (m_bOutputDebugString)
 		{
-			OutputDebugString(szBuff);
+			OutputDebugStringA(szBuff);
 		}
 	}
 	//-----------------------------------------------------------------------------
@@ -129,7 +133,16 @@ namespace GGUI
 					theBuffLength += 2;
 				}
 				//
-				fwrite(szBuff, theBuffLength, 1, m_fp);
+				if (sizeof(tchar) == 1)
+				{
+					fwrite(szBuff, theBuffLength, 1, m_fp);
+				}
+				else
+				{
+					int nNewStringLength = 0;
+					char* pAnsi = UnicodeToAnsi(szBuff, &nNewStringLength);
+					fwrite(pAnsi, nNewStringLength, 1, m_fp);
+				}
 				if (m_bFlushImmediately)
 				{
 					fflush(m_fp);
@@ -162,14 +175,14 @@ namespace GGUI
 			return false;
 		}
 		//
-		tchar szBuff[1024] = {0};
+		char szBuff[1024] = {0};
 		SYSTEMTIME stTime;
 		GetSystemTime(&stTime);
-		StringCbPrintf(szBuff, sizeof(szBuff), 
-			TEXT("========%04u:%02u:%02u %02u:%02u:%02u begin========\n"),
+		StringCbPrintfA(szBuff, sizeof(szBuff), 
+			"========%04u:%02u:%02u %02u:%02u:%02u begin========\n",
 			stTime.wYear, stTime.wMonth, stTime.wDay, stTime.wHour+8, stTime.wMinute, stTime.wSecond);
 		size_t theBuffLength = 0;
-		StringCbLength(szBuff, sizeof(szBuff), &theBuffLength);
+		StringCbLengthA(szBuff, sizeof(szBuff), &theBuffLength);
 		fwrite(szBuff, theBuffLength, 1, m_fp);
 		return true;
 	}
@@ -178,14 +191,14 @@ namespace GGUI
 	{
 		if (m_fp)
 		{
-			tchar szBuff[1024] = {0};
+			char szBuff[1024] = {0};
 			SYSTEMTIME stTime;
 			GetSystemTime(&stTime);
-			StringCbPrintf(szBuff, sizeof(szBuff), 
-				TEXT("========%4u:%2u:%2u %2u%2u%2u end========\n"),
+			StringCbPrintfA(szBuff, sizeof(szBuff), 
+				"========%4u:%2u:%2u %2u%2u%2u end========\n",
 				stTime.wYear, stTime.wMonth, stTime.wDay, stTime.wHour, stTime.wMinute, stTime.wSecond);
 			size_t theBuffLength = 0;
-			StringCbLength(szBuff, sizeof(szBuff), &theBuffLength);
+			StringCbLengthA(szBuff, sizeof(szBuff), &theBuffLength);
 			fwrite(szBuff, theBuffLength, 1, m_fp);
 			fflush(m_fp);
 			fclose(m_fp);

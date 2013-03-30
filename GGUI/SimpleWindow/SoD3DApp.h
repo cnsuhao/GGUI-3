@@ -19,8 +19,8 @@
 #define WIN32_LEAN_AND_MEAN 
 
 #include <windows.h>
-#include "../GGUI/SoD3DDefine.h"
-#include "../GGUI/SoBaseTypeDefine.h"
+#include "../GGUI/GGUID3DDefine.h"
+#include "../GGUI/GGUIBaseDefine.h"
 
 //-----------------------------------------------------------------------------
 class SoD3DApp

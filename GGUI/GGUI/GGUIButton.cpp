@@ -147,7 +147,6 @@ namespace GGUI
 		theRenderUnit.fColorG = fDestColorG;
 		theRenderUnit.fColorB = fDestColorB;
 		theRenderUnit.fColorA = m_fColorA;
-		theRenderUnit.theImagesetID = m_nMyImagesetID;
 		theRenderUnit.theImageID = m_nMyImageID;
 	}
 }
