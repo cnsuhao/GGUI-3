@@ -38,7 +38,7 @@ bool MyApp::InitResource(void)
 	//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 	//创建GGUI系统
 	new GGUISystem;
-	GGUISystem::GetInstance()->InitUISystem(SoD3DApp::GetD3DDevice(), (float)m_lClientW, (float)m_lClientH);
+	GGUISystem::GetInstance()->InitUISystem(SoD3DApp::GetD3DDevice(), m_lClientW, m_lClientH);
 	//
 	GGUILog* pLog = new GGUILog;
 	pLog->InitLog(TEXT("Log.txt"), true, true);
@@ -110,9 +110,9 @@ void MyApp::Update(float fAccTime, float fFrameTime)
 			GGUIWindow* pWindow = GGUIWindowManager::GetInstance()->GetUIWindow(m_nTransformWindowID);
 			if (pWindow)
 			{
-				float fCurrentPosLeft = pWindow->GetPositionX();
+				float fCurrentPosLeft = pWindow->GetRectLeft();
 				float fCurrentPosRight = fCurrentPosLeft + pWindow->GetWidth();
-				float fCurrentPosUp = pWindow->GetPositionY();
+				float fCurrentPosUp = pWindow->GetRectTop();
 				float fCurrentPosDown = fCurrentPosUp + pWindow->GetHeight();
 				//求出矩形的四个顶点的移动速度，包含方向。
 				//值为正表示Transform_Large，值为负表示Transform_Restore。
@@ -126,11 +126,11 @@ void MyApp::Update(float fAccTime, float fFrameTime)
 				float fNewPosUp = fCurrentPosUp + fSpeedUp * fFrameTime;
 				float fNewPosDown = fCurrentPosDown + fSpeedDown * fFrameTime;
 				//
-				pWindow->SetPositionX(fNewPosLeft);
-				pWindow->SetPositionY(fNewPosUp);
+				pWindow->SetRectLeft(fNewPosLeft);
+				pWindow->SetRectTop(fNewPosUp);
 				pWindow->SetWidth(fNewPosRight - fNewPosLeft);
 				pWindow->SetHeight(fNewPosDown - fNewPosUp);
-				pWindow->SetPositionZ(0.3f);
+				pWindow->SetZValue(300);
 			}
 		}
 	}
@@ -154,17 +154,17 @@ LRESULT MyApp::MsgProcess(UINT uMsg, WPARAM wParam, LPARAM lParam)
 			//本窗口处理了这个消息。
 			int xPos = LOWORD(lParam);
 			int yPos = HIWORD(lParam);
-			GGUISystem::GetInstance()->InjectMouseEvent(MouseMove, Mouse_Invalid, (float)xPos, (float)yPos);
+			GGUISystem::GetInstance()->InjectMouseEvent(MouseMove, Mouse_Invalid, xPos, yPos);
 		}
 		break;
 	case WM_LBUTTONDOWN:
 		{
-			GGUISystem::GetInstance()->InjectMouseEvent(ButtonDown, LeftMouse, 0.0f, 0.0f);
+			GGUISystem::GetInstance()->InjectMouseEvent(ButtonDown, LeftMouse, 0, 0);
 		}
 		break;
 	case WM_LBUTTONUP:
 		{
-			GGUISystem::GetInstance()->InjectMouseEvent(ButtonUp, LeftMouse, 0.0f, 0.0f);
+			GGUISystem::GetInstance()->InjectMouseEvent(ButtonUp, LeftMouse, 0, 0);
 		}
 		break;
 	default:
@@ -233,13 +233,11 @@ void MyApp::OnMouseClickWindowList(WindowID theWindowID, int uiParam)
 void MyApp::CreateUIWindowA()
 {
 	m_pUIWindow = GGUIWindowManager::GetInstance()->CreateUIWindow(WindowType_Picture);
-	m_pUIWindow->SetPositionX(0.0f);
-	m_pUIWindow->SetPositionY(0.0f);
-	m_pUIWindow->SetPositionZ(0.5f);
-	m_pUIWindow->SetWidth(600.0f);
-	m_pUIWindow->SetHeight(403.0f);
-	m_pUIWindow->SetColor(1.0f, 1.0f, 1.0f);
-	m_pUIWindow->SetAlpha(1.0f);
+	m_pUIWindow->SetRectLeft(0);
+	m_pUIWindow->SetRectTop(0);
+	m_pUIWindow->SetZValue(500);
+	m_pUIWindow->SetWidth(600);
+	m_pUIWindow->SetHeight(403);
 
 	ImagesetID theImagesetID = Invalid_ImagesetID;
 	ImageID theImageID = Invalid_ImageID;
@@ -268,13 +266,11 @@ void MyApp::CreateWindowList()
 		for (int x=0; x<PictureCountX; ++x)
 		{
 			GGUIWindow* pWindow = GGUIWindowManager::GetInstance()->CreateUIWindow(WindowType_Picture);
-			pWindow->SetPositionX(MarginX + x*(MarginX+PictureWindowWidth));
-			pWindow->SetPositionY(MarginY + y*(MarginY+PictureWindowHeight));
-			pWindow->SetPositionZ(0.5f);
+			pWindow->SetRectLeft(MarginX + x*(MarginX+PictureWindowWidth));
+			pWindow->SetRectTop(MarginY + y*(MarginY+PictureWindowHeight));
+			pWindow->SetZValue(500);
 			pWindow->SetWidth(PictureWindowWidth);
 			pWindow->SetHeight(PictureWindowHeight);
-			pWindow->SetColor(1.0f, 1.0f, 1.0f);
-			pWindow->SetAlpha(1.0f);
 			SoPrintf(szBuff, sizeof(szBuff), TEXT("Pic/%d.bmp"), y*PictureCountX+x);
 			ImagesetID theImagesetID = Invalid_ImagesetID;
 			ImageID theImageID = Invalid_ImageID;
@@ -301,13 +297,11 @@ void MyApp::ForceRestore(WindowID theWindowID)
 	//
 	int x = theWindowID % PictureCountX;
 	int y = theWindowID / PictureCountY;
-	pWindow->SetPositionX(MarginX + x*(MarginX+PictureWindowWidth));
-	pWindow->SetPositionY(MarginY + y*(MarginY+PictureWindowHeight));
-	pWindow->SetPositionZ(0.5f);
+	pWindow->SetRectLeft(MarginX + x*(MarginX+PictureWindowWidth));
+	pWindow->SetRectTop(MarginY + y*(MarginY+PictureWindowHeight));
+	pWindow->SetZValue(500);
 	pWindow->SetWidth(PictureWindowWidth);
 	pWindow->SetHeight(PictureWindowHeight);
-	pWindow->SetColor(1.0f, 1.0f, 1.0f);
-	pWindow->SetAlpha(1.0f);
 }
 //-----------------------------------------------------------------------------
 void MyApp::ForceLarge(WindowID theWindowID)
@@ -318,13 +312,11 @@ void MyApp::ForceLarge(WindowID theWindowID)
 		return;
 	}
 	//
-	pWindow->SetPositionX(0.0f);
-	pWindow->SetPositionY(0.0f);
-	pWindow->SetPositionZ(0.3f);
-	pWindow->SetWidth((float)m_lClientW);
-	pWindow->SetHeight((float)m_lClientH);
-	pWindow->SetColor(1.0f, 1.0f, 1.0f);
-	pWindow->SetAlpha(1.0f);
+	pWindow->SetRectLeft(0);
+	pWindow->SetRectTop(0);
+	pWindow->SetZValue(300);
+	pWindow->SetWidth(m_lClientW);
+	pWindow->SetHeight(m_lClientH);
 }
 //-----------------------------------------------------------------------------
 //  MyApp.cpp

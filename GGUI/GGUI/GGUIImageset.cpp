@@ -105,31 +105,15 @@ namespace GGUI
 		return pResult;
 	}
 	//-----------------------------------------------------------------------------
-	bool GGUIImageset::GetImageRectPixel(ImageID theImageID, float& fLeft, float& fRight, float& fTop, float& fBottom) const
+	bool GGUIImageset::GetImageRectPixel(ImageID theImageID, SoInt& nLeft, SoInt& nRight, SoInt& nTop, SoInt& nBottom) const
 	{
 		const GGUIImage* pRect = GetImage(theImageID);
 		if (pRect)
 		{
-			fLeft = pRect->m_fLeft * m_nTextureWidth;
-			fRight = pRect->m_fRight * m_nTextureWidth;
-			fTop = pRect->m_fTop * m_nTextureHeight;
-			fBottom = pRect->m_fBottom * m_nTextureHeight;
-			if (fLeft < 0.0f)
-			{
-				fLeft = 0.0f;
-			}
-			if (fRight > (float)m_nTextureWidth)
-			{
-				fRight = (float)m_nTextureWidth;
-			}
-			if (fTop < 0.0f)
-			{
-				fTop = 0.0f;
-			}
-			if (fBottom > (float)m_nTextureHeight)
-			{
-				fBottom = (float)m_nTextureHeight;
-			}
+			nLeft = (SoInt)(pRect->m_fLeft * (float)m_nTextureWidth + 0.5f);
+			nRight = (SoInt)(pRect->m_fRight * (float)m_nTextureWidth + 0.5f);
+			nTop = (SoInt)(pRect->m_fTop * (float)m_nTextureHeight + 0.5f);
+			nBottom = (SoInt)(pRect->m_fBottom * (float)m_nTextureHeight + 0.5f);
 			return true;
 		}
 		else

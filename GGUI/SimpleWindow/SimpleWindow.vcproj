@@ -95,7 +95,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy /y ..\Output\SimpleWindow\Debug\SimpleWindow_d.exe ..\..\Client\&#x0D;&#x0A;copy /y ..\Output\SimpleWindow\Debug\SimpleWindow_d.pdb ..\..\Client\"
+				CommandLine="copy /y ..\Output\SimpleWindow\Debug\SimpleWindow_d.exe ..\..\..\Client\&#x0D;&#x0A;copy /y ..\Output\SimpleWindow\Debug\SimpleWindow_d.pdb ..\..\..\Client\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -180,7 +180,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="copy /y ..\Output\SimpleWindow\Release\SimpleWindow.exe ..\..\Client\&#x0D;&#x0A;copy /y ..\Output\SimpleWindow\Release\SimpleWindow.pdb ..\..\Client\"
+				CommandLine="copy /y ..\Output\SimpleWindow\Release\SimpleWindow.exe ..\..\..\Client\&#x0D;&#x0A;copy /y ..\Output\SimpleWindow\Release\SimpleWindow.pdb ..\..\..\Client\&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>

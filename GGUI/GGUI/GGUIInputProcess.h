@@ -21,11 +21,11 @@ namespace GGUI
 		bool InitInputProcess();
 		void ReleaseInputProcess();
 
-		//--fNewPosX 以窗口客户区的左上角为(0,0)点，鼠标最新屏幕坐标的X值。可以为负数。
-		//--fNewPosY 以窗口客户区的左上角为(0,0)点，鼠标最新屏幕坐标的Y值。可以为负数。
+		//--nNewPosX 以窗口客户区的左上角为(0,0)点，鼠标最新屏幕坐标的X值。可以为负数。
+		//--nNewPosY 以窗口客户区的左上角为(0,0)点，鼠标最新屏幕坐标的Y值。可以为负数。
 		//返回ture表示这个事件被本系统响应并处理了；
 		//返回false表示本系统不关心并没有处理这个事件。
-		bool OnMouseMove(float fNewPosX, float fNewPosY);
+		bool OnMouseMove(SoInt nNewPosX, SoInt nNewPosY);
 		//
 		bool OnMouseLeftButtonDown();
 		bool OnMouseLeftButtonUp();
@@ -44,9 +44,9 @@ namespace GGUI
 		void MouseLeaveWindowArea(WindowID theWindow);
 		//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-		bool IsMouseOutOfScreen(float fMousePosX, float fMousePosY);
+		bool IsMouseOutOfScreen(SoInt nMousePosX, SoInt nMousePosY);
 		//根据鼠标坐标，得到鼠标落在了哪个窗口内部。
-		WindowID GetWindowWhoContainMouse(float fMousePosX, float fMousePosY);
+		WindowID GetWindowWhoContainMouse(SoInt nMousePosX, SoInt nMousePosY);
 
 	private:
 		static GGUIInputProcess* ms_pInstance;
@@ -55,8 +55,8 @@ namespace GGUI
 		//记录当前的鼠标操作状态。
 		eMouseOpState m_eCurrentMouseOpState;
 		//记录最新的鼠标坐标。
-		float m_fMousePosX;
-		float m_fMousePosY;
+		SoInt m_nMousePosX;
+		SoInt m_nMousePosY;
 		//记录鼠标落在哪个窗口内部。
 		//如果窗口发生重叠的话，则鼠标可能落在多个窗口内部。
 		//目前认为窗口没有重叠，只考虑最简单的情况。
@@ -68,13 +68,13 @@ namespace GGUI
 		return ms_pInstance;
 	}
 	//-----------------------------------------------------------------------------
-	inline bool GGUIInputProcess::IsMouseOutOfScreen(float fMousePosX, float fMousePosY)
+	inline bool GGUIInputProcess::IsMouseOutOfScreen(SoInt nMousePosX, SoInt nMousePosY)
 	{
-		if (fMousePosX < 0.0f || fMousePosX > GGUIScreenParam::ms_fScreenWidth)
+		if (nMousePosX < 0 || nMousePosX > GGUIScreenParam::ms_nScreenWidth)
 		{
 			return true;
 		}
-		if (fMousePosY < 0.0f || fMousePosY > GGUIScreenParam::ms_fScreenHeight)
+		if (nMousePosY < 0 || nMousePosY > GGUIScreenParam::ms_nScreenHeight)
 		{
 			return true;
 		}

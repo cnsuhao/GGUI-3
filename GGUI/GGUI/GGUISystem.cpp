@@ -27,12 +27,12 @@ namespace GGUI
 		ms_pInstance = NULL;
 	}
 	//-----------------------------------------------------------------------------
-	bool GGUISystem::InitUISystem(IDirect3DDevice9* pDevice, float fScreenWidth, float fScreenHeight)
+	bool GGUISystem::InitUISystem(IDirect3DDevice9* pDevice, SoInt nScreenWidth, SoInt nScreenHeight)
 	{
 		//首先为m_pD3DDevice赋值。
 		m_pD3DDevice = pDevice;
-		GGUIScreenParam::ms_fScreenWidth = fScreenWidth;
-		GGUIScreenParam::ms_fScreenHeight = fScreenHeight;
+		GGUIScreenParam::ms_nScreenWidth = nScreenWidth;
+		GGUIScreenParam::ms_nScreenHeight = nScreenHeight;
 		//
 		new GGUIWindowManager;
 		if (!GGUIWindowManager::GetInstance()->InitWindowManager())
@@ -106,7 +106,7 @@ namespace GGUI
 		return bResult;
 	}
 	//-----------------------------------------------------------------------------
-	bool GGUISystem::InjectMouseEvent(eInputEvent theEvent, eMouseButton theButton, float fParamA, float fParamB)
+	bool GGUISystem::InjectMouseEvent(eInputEvent theEvent, eMouseButton theButton, SoInt nParamA, SoInt nParamB)
 	{
 		bool bResult = false;
 		switch (theEvent)
@@ -137,7 +137,7 @@ namespace GGUI
 			break;
 		case MouseMove:
 			{
-				bResult = GGUIInputProcess::GetInstance()->OnMouseMove(fParamA, fParamB);
+				bResult = GGUIInputProcess::GetInstance()->OnMouseMove(nParamA, nParamB);
 			}
 			break;
 		default:

@@ -21,25 +21,27 @@ namespace GGUI
 		virtual void RenderWindow();
 
 		//设置属性函数
-		void SetPositionX(float fPosX);
-		void SetPositionY(float fPosY);
-		void SetPositionZ(float fPosZ);
-		void SetWidth(float fWidth);
-		void SetHeight(float fHeight);
-		void SetColor(float fR, float fG, float fB);
-		void SetAlpha(float fAlpha);
+		void SetRectLeft(SoInt nLeft);
+		void SetRectRight(SoInt nRight);
+		void SetRectTop(SoInt nTop);
+		void SetRectBottom(SoInt nBottom);
+		void SetZValue(SoInt nZValue);
+		void SetWidth(SoInt nWidth);
+		void SetHeight(SoInt nHeight);
+		void SetColor(SoUInt8 byColorR, SoUInt8 byColorG, SoUInt8 byColorB);
+		void SetAlpha(SoUInt8 byColorA);
 		void SetImageID(ImageID theID);
 		virtual void SetVisible(bool bVisible);
 		virtual void SetEnable(bool bEnable);
 
 		//获取属性函数
-		float GetPositionX() const;
-		float GetPositionY() const;
-		float GetPositionZ() const;
-		float GetWidth() const;
-		float GetHeight() const;
-		void GetColor(float& fR, float& fG, float& fB) const;
-		float GetAlpha() const;
+		SoInt GetRectLeft() const;
+		SoInt GetRectRight() const;
+		SoInt GetRectTop() const;
+		SoInt GetRectBottom() const;
+		SoInt GetZValue() const;
+		SoInt GetWidth() const;
+		SoInt GetHeight() const;
 		WindowID GetWindowID() const;
 		ImageID GetImageID() const;
 		DelegateID GetDelegateID() const;
@@ -48,7 +50,7 @@ namespace GGUI
 
 		//根据鼠标坐标和本窗口的矩形区域，判断鼠标是否落在本窗口内部。
 		//单纯的位置判断，不考虑窗口是否可见，是否被禁用等等。
-		bool CheckMouseInWindowArea(float fMousePosX, float fMousePosY) const;
+		bool CheckMouseInWindowArea(SoInt nMousePosX, SoInt nMousePosY) const;
 
 	protected:
 		//事件响应函数。在函数内部会执行用户注册的Delegate函数。
@@ -76,15 +78,10 @@ namespace GGUI
 		//本窗口的Delegate事件响应函数的ID。
 		DelegateID m_nMyDelegateID;
 		//
-		float m_fPositionX;
-		float m_fPositionY;
-		float m_fPositionZ;
-		float m_fWidth;
-		float m_fHeight;
-		float m_fColorR;
-		float m_fColorG;
-		float m_fColorB;
-		float m_fColorA;
+		stRect m_WindowRect;
+		//Z轴深度值，用于绘制时的排序。
+		SoInt m_nZValue;
+		stColor m_WindowColor;
 		//记录窗口属性数据是否发生了变化。如果发生了变化，就应该重绘。
 		bool m_bDirty;
 		//记录窗口是否可见。
@@ -96,11 +93,11 @@ namespace GGUI
 
 	};
 	//-----------------------------------------------------------------------------
-	inline bool GGUIWindow::CheckMouseInWindowArea(float fMousePosX, float fMousePosY) const
+	inline bool GGUIWindow::CheckMouseInWindowArea(SoInt nMousePosX, SoInt nMousePosY) const
 	{
-		if (fMousePosX > m_fPositionX && fMousePosX < m_fPositionX + m_fWidth)
+		if (nMousePosX > m_WindowRect.nLeft && nMousePosX < m_WindowRect.nRight)
 		{
-			if (fMousePosY > m_fPositionY && fMousePosY < m_fPositionY + m_fHeight)
+			if (nMousePosY > m_WindowRect.nTop && nMousePosY < m_WindowRect.nBottom)
 			{
 				return true;
 			}

@@ -12,8 +12,8 @@ namespace GGUI
 	//-----------------------------------------------------------------------------
 	GGUIInputProcess::GGUIInputProcess()
 	:m_eCurrentMouseOpState(MouseOp_None)
-	,m_fMousePosX(0.0f)
-	,m_fMousePosY(0.0f)
+	,m_nMousePosX(0)
+	,m_nMousePosY(0)
 	,m_theWindowContainMouse(Invalid_WindowID)
 	{
 		ms_pInstance = this;
@@ -35,14 +35,14 @@ namespace GGUI
 
 	}
 	//-----------------------------------------------------------------------------
-	bool GGUIInputProcess::OnMouseMove(float fNewPosX, float fNewPosY)
+	bool GGUIInputProcess::OnMouseMove(SoInt nNewPosX, SoInt nNewPosY)
 	{
-		m_fMousePosX = fNewPosX;
-		m_fMousePosY = fNewPosY;
+		m_nMousePosX = nNewPosX;
+		m_nMousePosY = nNewPosY;
 		//
 		bool bResult = false;
 		//判断鼠标是否落在了用户窗口的外面。
-		bool bOutOfScreen = IsMouseOutOfScreen(fNewPosX, fNewPosY);
+		bool bOutOfScreen = IsMouseOutOfScreen(nNewPosX, nNewPosY);
 		//判断鼠标落在了哪个窗口内部。
 		WindowID theOldWindowWhoContainMouse = m_theWindowContainMouse;
 		WindowID theNewWindowWhoContainMouse = Invalid_WindowID;
@@ -53,7 +53,7 @@ namespace GGUI
 			if (theOldWindowWhoContainMouse != Invalid_WindowID)
 			{
 				GGUIWindow* pOldWindow = GGUIWindowManager::GetInstance()->GetUIWindow(theOldWindowWhoContainMouse);
-				if (pOldWindow && pOldWindow->GetVisible() && pOldWindow->CheckMouseInWindowArea(fNewPosX, fNewPosY))
+				if (pOldWindow && pOldWindow->GetVisible() && pOldWindow->CheckMouseInWindowArea(nNewPosX, nNewPosY))
 				{
 					theNewWindowWhoContainMouse = theOldWindowWhoContainMouse;
 				}
@@ -61,7 +61,7 @@ namespace GGUI
 			//如果不确定鼠标落在哪个窗口内，则遍历所有的窗口。
 			if (theNewWindowWhoContainMouse == Invalid_WindowID)
 			{
-				theNewWindowWhoContainMouse = GetWindowWhoContainMouse(fNewPosX, fNewPosY);
+				theNewWindowWhoContainMouse = GetWindowWhoContainMouse(nNewPosX, nNewPosY);
 			}
 		}
 		//处理“鼠标落入了一个窗口矩形范围”的逻辑。
@@ -129,7 +129,7 @@ namespace GGUI
 		}
 	}
 	//-----------------------------------------------------------------------------
-	WindowID GGUIInputProcess::GetWindowWhoContainMouse(float fMousePosX, float fMousePosY)
+	WindowID GGUIInputProcess::GetWindowWhoContainMouse(SoInt nMousePosX, SoInt nMousePosY)
 	{
 		WindowID theResult = Invalid_WindowID;
 		GGUIWindowManager* pWindowContainer = GGUIWindowManager::GetInstance();
@@ -137,7 +137,7 @@ namespace GGUI
 		GGUIWindow* pWindow = SoNULL;
 		while (pWindowContainer->Next(nIndex, pWindow))
 		{
-			if (pWindow->GetVisible() && pWindow->CheckMouseInWindowArea(fMousePosX, fMousePosY))
+			if (pWindow->GetVisible() && pWindow->CheckMouseInWindowArea(nMousePosX, nMousePosY))
 			{
 				theResult = pWindow->GetWindowID();
 				break;

@@ -58,6 +58,8 @@ namespace GGUI
 	//
 	typedef SoInt DelegateID;
 	static const DelegateID Invalid_DelegateID = -1;
+	//
+	static const float MaxZValue = 1000.0f;
 
 	//窗口的各个类型。
 	enum eWindowType
@@ -66,6 +68,7 @@ namespace GGUI
 		WindowType_Base = 0, //GGUIWindow类型
 		WindowType_Button, //GGUIButton类型
 		WindowType_Picture, //GGUIPicture类型
+		WindowType_Frame, //GGUIFrame类型
 		WindowType_Max,
 	};
 
@@ -102,24 +105,38 @@ namespace GGUI
 		DelegateForWindowEvent theFunction[WindowEvent_Max];
 	};
 
+	//矩形区域。
+	struct stRect
+	{
+		SoInt nLeft;
+		SoInt nRight;
+		SoInt nTop;
+		SoInt nBottom;
+		stRect():nLeft(0),nRight(0),nTop(0),nBottom(0) { }
+	};
+
+	//颜色。
+	struct stColor
+	{
+		SoUInt8 byColorA;
+		SoUInt8 byColorR;
+		SoUInt8 byColorG;
+		SoUInt8 byColorB;
+		stColor():byColorA(255),byColorR(255),byColorG(255),byColorB(255) { }
+	};
 
 	//窗口的绘制参数。
 	struct stRenderUnit
 	{
-		float fPositionX;
-		float fPositionY;
-		float fPositionZ;
-		float fWidth;
-		float fHeight;
-		float fColorR;
-		float fColorG;
-		float fColorB;
-		float fColorA;
+		stRect theWindowRect;
+		float fZValue;
+		SoUInt32 uiColor32;
 		ImageID theImageID;
 	};
 
 	//-----------------------------------------------------------------------------
 	ImagesetID Help_GetImagesetIDByImageID(ImageID theImageID);
+	SoUInt32 Help_GenerateColor32(const stColor& theColor);
 
 } //namespace GGUI
 //-----------------------------------------------------------------------------

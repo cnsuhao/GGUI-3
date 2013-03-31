@@ -7,8 +7,8 @@
 //-----------------------------------------------------------------------------
 namespace GGUI
 {
-	float GGUIScreenParam::ms_fScreenWidth = 0.0f;
-	float GGUIScreenParam::ms_fScreenHeight = 0.0f;
+	SoInt GGUIScreenParam::ms_nScreenWidth = 0;
+	SoInt GGUIScreenParam::ms_nScreenHeight = 0;
 
 
 }

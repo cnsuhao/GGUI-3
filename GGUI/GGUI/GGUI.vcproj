@@ -186,6 +186,14 @@
 			>
 		</File>
 		<File
+			RelativePath=".\GGUIFrame.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\GGUIFrame.h"
+			>
+		</File>
+		<File
 			RelativePath=".\GGUIImageset.cpp"
 			>
 		</File>

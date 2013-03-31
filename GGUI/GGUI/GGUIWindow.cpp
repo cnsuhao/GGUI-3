@@ -13,15 +13,7 @@ namespace GGUI
 	,m_nMyWindowID(Invalid_WindowID)
 	,m_nMyImageID(Invalid_ImageID)
 	,m_nMyDelegateID(Invalid_DelegateID)
-	,m_fPositionX(0.0f)
-	,m_fPositionY(0.0f)
-	,m_fPositionZ(0.0f)
-	,m_fWidth(0.0f)
-	,m_fHeight(0.0f)
-	,m_fColorR(0.0f)
-	,m_fColorG(0.0f)
-	,m_fColorB(0.0f)
-	,m_fColorA(0.0f)
+	,m_nZValue(0)
 	,m_bDirty(false)
 	,m_bVisible(true)
 	,m_bEnable(true)
@@ -49,47 +41,59 @@ namespace GGUI
 
 	}
 	//-----------------------------------------------------------------------------
-	void GGUIWindow::SetPositionX(float fPosX)
+	void GGUIWindow::SetRectLeft(SoInt nLeft)
 	{
-		m_fPositionX = fPosX;
+		m_WindowRect.nLeft = nLeft;
 		m_bDirty = true;
 	}
 	//-----------------------------------------------------------------------------
-	void GGUIWindow::SetPositionY(float fPosY)
+	void GGUIWindow::SetRectRight(SoInt nRight)
 	{
-		m_fPositionY = fPosY;
+		m_WindowRect.nRight = nRight;
 		m_bDirty = true;
 	}
 	//-----------------------------------------------------------------------------
-	void GGUIWindow::SetPositionZ(float fPosZ)
+	void GGUIWindow::SetRectTop(SoInt nTop)
 	{
-		m_fPositionZ = fPosZ;
+		m_WindowRect.nTop = nTop;
 		m_bDirty = true;
 	}
 	//-----------------------------------------------------------------------------
-	void GGUIWindow::SetWidth(float fWidth)
+	void GGUIWindow::SetRectBottom(SoInt nBottom)
 	{
-		m_fWidth = fWidth;
+		m_WindowRect.nBottom = nBottom;
 		m_bDirty = true;
 	}
 	//-----------------------------------------------------------------------------
-	void GGUIWindow::SetHeight(float fHeight)
+	void GGUIWindow::SetZValue(SoInt nZValue)
 	{
-		m_fHeight = fHeight;
+		m_nZValue = nZValue;
 		m_bDirty = true;
 	}
 	//-----------------------------------------------------------------------------
-	void GGUIWindow::SetColor(float fR, float fG, float fB)
+	void GGUIWindow::SetWidth(SoInt nWidth)
 	{
-		m_fColorR = fR;
-		m_fColorG = fG;
-		m_fColorB = fB;
+		m_WindowRect.nRight = m_WindowRect.nLeft + nWidth;
 		m_bDirty = true;
 	}
 	//-----------------------------------------------------------------------------
-	void GGUIWindow::SetAlpha(float fAlpha)
+	void GGUIWindow::SetHeight(SoInt nHeight)
 	{
-		m_fColorA = fAlpha;
+		m_WindowRect.nBottom = m_WindowRect.nTop + nHeight;
+		m_bDirty = true;
+	}
+	//-----------------------------------------------------------------------------
+	void GGUIWindow::SetColor(SoUInt8 byColorR, SoUInt8 byColorG, SoUInt8 byColorB)
+	{
+		m_WindowColor.byColorR = byColorR;
+		m_WindowColor.byColorG = byColorG;
+		m_WindowColor.byColorB = byColorB;
+		m_bDirty = true;
+	}
+	//-----------------------------------------------------------------------------
+	void GGUIWindow::SetAlpha(SoUInt8 byColorA)
+	{
+		m_WindowColor.byColorA = byColorA;
 		m_bDirty = true;
 	}
 	//-----------------------------------------------------------------------------
@@ -109,41 +113,39 @@ namespace GGUI
 		m_bEnable = bEnable;
 	}
 	//-----------------------------------------------------------------------------
-	float GGUIWindow::GetPositionX() const
+	SoInt GGUIWindow::GetRectLeft() const
 	{
-		return m_fPositionX;
+		return m_WindowRect.nLeft;
 	}
 	//-----------------------------------------------------------------------------
-	float GGUIWindow::GetPositionY() const
+	SoInt GGUIWindow::GetRectRight() const
 	{
-		return m_fPositionY;
+		return m_WindowRect.nRight;
 	}
 	//-----------------------------------------------------------------------------
-	float GGUIWindow::GetPositionZ() const
+	SoInt GGUIWindow::GetRectTop() const
 	{
-		return m_fPositionZ;
+		return m_WindowRect.nTop;
 	}
 	//-----------------------------------------------------------------------------
-	float GGUIWindow::GetWidth() const
+	SoInt GGUIWindow::GetRectBottom() const
 	{
-		return m_fWidth;
+		return m_WindowRect.nBottom;
 	}
 	//-----------------------------------------------------------------------------
-	float GGUIWindow::GetHeight() const
+	SoInt GGUIWindow::GetZValue() const
 	{
-		return m_fHeight;
+		return m_nZValue;
 	}
 	//-----------------------------------------------------------------------------
-	void GGUIWindow::GetColor(float& fR, float& fG, float& fB) const
+	SoInt GGUIWindow::GetWidth() const
 	{
-		fR = m_fColorR;
-		fG = m_fColorG;
-		fB = m_fColorB;
+		return m_WindowRect.nRight - m_WindowRect.nLeft;
 	}
 	//-----------------------------------------------------------------------------
-	float GGUIWindow::GetAlpha() const
+	SoInt GGUIWindow::GetHeight() const
 	{
-		return m_fColorA;
+		return m_WindowRect.nBottom - m_WindowRect.nTop;
 	}
 	//-----------------------------------------------------------------------------
 	WindowID GGUIWindow::GetWindowID() const
@@ -213,15 +215,9 @@ namespace GGUI
 	//-----------------------------------------------------------------------------
 	void GGUIWindow::GenerateRenderUnit(stRenderUnit& theRenderUnit)
 	{
-		theRenderUnit.fPositionX = m_fPositionX;
-		theRenderUnit.fPositionY = m_fPositionY;
-		theRenderUnit.fPositionZ = m_fPositionZ;
-		theRenderUnit.fWidth = m_fWidth;
-		theRenderUnit.fHeight = m_fHeight;
-		theRenderUnit.fColorR = m_fColorR;
-		theRenderUnit.fColorG = m_fColorG;
-		theRenderUnit.fColorB = m_fColorB;
-		theRenderUnit.fColorA = m_fColorA;
+		theRenderUnit.theWindowRect = m_WindowRect;
+		theRenderUnit.fZValue = ((float)m_nZValue) / MaxZValue;
+		theRenderUnit.uiColor32 = Help_GenerateColor32(m_WindowColor);
 		theRenderUnit.theImageID = m_nMyImageID;
 	}
 }

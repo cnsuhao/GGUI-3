@@ -55,7 +55,7 @@ namespace GGUI
 		ImageID GetImageIDByName(const GGUITinyString& strImageName) const;
 		const GGUITinyString* GetImageNameByID(ImageID theImageID) const;
 		//ImageRect中存储的是纹理UV坐标。这个函数用于获取ImageRect的像素坐标。
-		bool GetImageRectPixel(ImageID theImageID, float& fLeft, float& fRight, float& fTop, float& fBottom) const;
+		bool GetImageRectPixel(ImageID theImageID, SoInt& nLeft, SoInt& nRight, SoInt& nTop, SoInt& nBottom) const;
 
 	protected:
 		void SetImagesetID(ImagesetID theID);

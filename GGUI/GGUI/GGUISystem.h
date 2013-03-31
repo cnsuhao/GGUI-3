@@ -6,6 +6,7 @@
 #ifndef _GGUISystem_h_
 #define _GGUISystem_h_
 //-----------------------------------------------------------------------------
+#include "GGUIBaseDefine.h"
 #include "GGUID3DDefine.h"
 #include "GGUIInputDefine.h"
 //-----------------------------------------------------------------------------
@@ -19,7 +20,7 @@ namespace GGUI
 		static GGUISystem* GetInstance();
 
 		//初始化GGUI系统，创建必要的组件和资源。
-		bool InitUISystem(IDirect3DDevice9* pDevice, float fScreenWidth, float fScreenHeight);
+		bool InitUISystem(IDirect3DDevice9* pDevice, SoInt nScreenWidth, SoInt nScreenHeight);
 		//释放GGUI系统。
 		void ReleaseUISystem();
 		//获取D3D设备指针。
@@ -37,7 +38,7 @@ namespace GGUI
 		//注入一个鼠标事件。
 		//返回ture表示这个事件被本系统响应并处理了；
 		//返回false表示本系统不关心并没有处理这个事件。
-		bool InjectMouseEvent(eInputEvent theEvent, eMouseButton theButton, float fParamA, float fParamB);
+		bool InjectMouseEvent(eInputEvent theEvent, eMouseButton theButton, SoInt nParamA, SoInt nParamB);
 
 	private:
 		static GGUISystem* ms_pInstance;

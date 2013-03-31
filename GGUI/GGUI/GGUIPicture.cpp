@@ -36,51 +36,49 @@ namespace GGUI
 	{
 		if (m_ePictureShow == PictureShow_Auto)
 		{
-			float fDestPosX = m_fPositionX;
-			float fDestPosY = m_fPositionY;
-			float fDestWidth = m_fWidth;
-			float fDestHeight = m_fHeight;
+			stRect destRect = m_WindowRect;
 			//获取图片源文件的宽高。
 			ImagesetID theImagesetID = Help_GetImagesetIDByImageID(m_nMyImageID);
 			const GGUIImageset* pImageset = GGUIImagesetManager::GetInstance()->GetImageset(theImagesetID);
 			if (pImageset)
 			{
-				float fLeft = 0.0f;
-				float fRight = 0.0f;
-				float fTop = 0.0f;
-				float fBottom = 0.0f;
-				if (pImageset->GetImageRectPixel(m_nMyImageID, fLeft, fRight, fTop, fBottom))
+				SoInt nLeft = 0;
+				SoInt nRight = 0;
+				SoInt nTop = 0;
+				SoInt nBottom = 0;
+				if (pImageset->GetImageRectPixel(m_nMyImageID, nLeft, nRight, nTop, nBottom))
 				{
-					float fTextureSourceWidth = fRight - fLeft;
-					float fTextureSourceHeight = fBottom - fTop;
-					float fWindowHeightWidth = m_fHeight / m_fWidth;
-					float fTextureHeightWidth = fTextureSourceHeight / fTextureSourceWidth;
-					if (fWindowHeightWidth > fTextureHeightWidth)
+					SoInt nTextureSourceWidth = nRight - nLeft;
+					SoInt nTextureSourceHeight = nBottom - nTop;
+					SoInt nWindowWidth = m_WindowRect.nRight - m_WindowRect.nLeft;
+					SoInt nWindowHeight = m_WindowRect.nBottom - m_WindowRect.nTop;
+					if (nTextureSourceWidth != 0 && nWindowWidth != 0)
 					{
-						//宽度不变，对高度进行调整。
-						fDestHeight = m_fWidth * fTextureHeightWidth;
-						fDestPosY += (m_fHeight - fDestHeight) * 0.5f;
-					}
-					else if (fWindowHeightWidth < fTextureHeightWidth)
-					{
-						fDestWidth = m_fHeight / fTextureHeightWidth;
-						fDestPosX += (m_fWidth - fDestWidth) * 0.5f;
-					}
-					else
-					{
-						//什么都不做。
+						float fWindowHeightWidth = (float)nWindowHeight / (float)nWindowWidth;
+						float fTextureHeightWidth = (float)nTextureSourceHeight / (float)nTextureSourceWidth;
+						if (fWindowHeightWidth > fTextureHeightWidth)
+						{
+							//宽度不变，对高度进行调整。
+							SoInt nDestHeight = (SoInt)((float)nWindowWidth * fTextureHeightWidth + 0.5f);
+							destRect.nTop += (SoInt)((float)(nWindowHeight - nDestHeight) * 0.5f + 0.5f);
+							destRect.nBottom = destRect.nTop + nDestHeight;
+						}
+						else if (fWindowHeightWidth < fTextureHeightWidth)
+						{
+							SoInt nDestWidth = (SoInt)((float)nWindowHeight / fTextureHeightWidth + 0.5f);
+							destRect.nLeft += (SoInt)((float)(nWindowWidth - nDestWidth) * 0.5f + 0.5f);
+							destRect.nRight = destRect.nLeft + nDestWidth;
+						}
+						else
+						{
+							//什么都不做。
+						}
 					}
 				}
 			}
-			theRenderUnit.fPositionX = fDestPosX;
-			theRenderUnit.fPositionY = fDestPosY;
-			theRenderUnit.fPositionZ = m_fPositionZ;
-			theRenderUnit.fWidth = fDestWidth;
-			theRenderUnit.fHeight = fDestHeight;
-			theRenderUnit.fColorR = m_fColorR;
-			theRenderUnit.fColorG = m_fColorG;
-			theRenderUnit.fColorB = m_fColorB;
-			theRenderUnit.fColorA = m_fColorA;
+			theRenderUnit.theWindowRect = destRect;
+			theRenderUnit.fZValue = ((float)m_nZValue) / MaxZValue;
+			theRenderUnit.uiColor32 = Help_GenerateColor32(m_WindowColor);
 			theRenderUnit.theImageID = m_nMyImageID;
 		}
 	}

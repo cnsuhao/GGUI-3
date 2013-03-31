@@ -6,13 +6,15 @@
 #ifndef _GGUIScreenParam_h_
 #define _GGUIScreenParam_h_
 //-----------------------------------------------------------------------------
+#include "GGUIBaseDefine.h"
+//-----------------------------------------------------------------------------
 namespace GGUI
 {
 	class GGUIScreenParam
 	{
 	public:
-		static float ms_fScreenWidth;
-		static float ms_fScreenHeight;
+		static SoInt ms_nScreenWidth;
+		static SoInt ms_nScreenHeight;
 
 	};
 }

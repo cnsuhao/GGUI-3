@@ -101,52 +101,44 @@ namespace GGUI
 	//-----------------------------------------------------------------------------
 	void GGUIButton::GenerateRenderUnit(stRenderUnit& theRenderUnit)
 	{
-		static float s_fColorReduce = 1.0f;
-		static float s_fDeltaX = 2.0f;
-		static float s_fDeltaY = 2.0f;
+		static SoInt s_nDeltaX = 2;
+		static SoInt s_nDeltaY = 2;
+		static float s_fDisableColor = 0.5f;
 
-		float fDestColorR = m_fColorR;
-		float fDestColorG = m_fColorG;
-		float fDestColorB = m_fColorB;
-		float fDestPosX = m_fPositionX;
-		float fDestPosY = m_fPositionY;
+		stRect destRect = m_WindowRect;
+		stColor destColor = m_WindowColor;
+		//
 		switch (m_eButtonState)
 		{
 		case ButtonState_Normal:
 			break;
 		case ButtonState_Hover:
 			{
-				fDestColorR = m_fColorR * s_fColorReduce;
-				fDestColorG = m_fColorG * s_fColorReduce;
-				fDestPosX = m_fPositionX - s_fDeltaX;
-				fDestPosY = m_fPositionY - s_fDeltaY;
+				destRect.nLeft -= s_nDeltaX;
+				destRect.nRight -= s_nDeltaX;
+				destRect.nTop -= s_nDeltaY;
+				destRect.nBottom -= s_nDeltaY;
 			}
 			break;
 		case ButtonState_PushDown:
 			{
-				fDestColorG = m_fColorG * s_fColorReduce;
-				fDestColorB = m_fColorB * s_fColorReduce;
-				fDestPosX = m_fPositionX + s_fDeltaX;
-				fDestPosY = m_fPositionY + s_fDeltaY;
+				destRect.nLeft += s_nDeltaX;
+				destRect.nRight += s_nDeltaX;
+				destRect.nTop += s_nDeltaY;
+				destRect.nBottom += s_nDeltaY;
 			}
 			break;
 		case ButtonState_Disable:
 			{
-				fDestColorR = m_fColorR * s_fColorReduce;
-				fDestColorG = m_fColorG * s_fColorReduce;
-				fDestColorB = m_fColorB * s_fColorReduce;
+				destColor.byColorR = (SoUInt8)(destColor.byColorR * s_fDisableColor);
+				destColor.byColorG = (SoUInt8)(destColor.byColorG * s_fDisableColor);
+				destColor.byColorB = (SoUInt8)(destColor.byColorB * s_fDisableColor);
 			}
 			break;
 		}
-		theRenderUnit.fPositionX = fDestPosX;
-		theRenderUnit.fPositionY = fDestPosY;
-		theRenderUnit.fPositionZ = m_fPositionZ;
-		theRenderUnit.fWidth = m_fWidth;
-		theRenderUnit.fHeight = m_fHeight;
-		theRenderUnit.fColorR = fDestColorR;
-		theRenderUnit.fColorG = fDestColorG;
-		theRenderUnit.fColorB = fDestColorB;
-		theRenderUnit.fColorA = m_fColorA;
+		theRenderUnit.theWindowRect = destRect;
+		theRenderUnit.fZValue = ((float)m_nZValue) / MaxZValue;
+		theRenderUnit.uiColor32 = Help_GenerateColor32(destColor);
 		theRenderUnit.theImageID = m_nMyImageID;
 	}
 }

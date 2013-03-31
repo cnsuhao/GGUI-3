@@ -110,12 +110,12 @@ namespace GGUI
 			CreateDXIndexBuffer(m_nVertexContentCapacity / 2);
 		}
 		//
-		float fLeft = theRenderUnit.fPositionX;
-		float fRight = fLeft + theRenderUnit.fWidth;
-		float fTop = theRenderUnit.fPositionY;
-		float fBottom = fTop + theRenderUnit.fHeight;
-		float fDepth = theRenderUnit.fPositionZ;
-		SoUInt32 uiColor = SoMakeColorRGBA(theRenderUnit.fColorR, theRenderUnit.fColorG, theRenderUnit.fColorB, theRenderUnit.fColorA);
+		float fLeft = (float)theRenderUnit.theWindowRect.nLeft;
+		float fRight = (float)theRenderUnit.theWindowRect.nRight;
+		float fTop = (float)theRenderUnit.theWindowRect.nTop;
+		float fBottom = (float)theRenderUnit.theWindowRect.nBottom;
+		float fDepth = theRenderUnit.fZValue;
+		SoUInt32 uiColor = theRenderUnit.uiColor32;
 		float fUVLeft = 0.0f;
 		float fUVRight = 0.0f;
 		float fUVTop = 0.0f;
